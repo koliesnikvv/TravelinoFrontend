@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import client from '../api/client';
 import { parseError } from '../api/errors';
-import { validateEmail, validatePassword } from '../utils/validation';
+import { validateEmail } from '../utils/validation';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -21,17 +21,14 @@ function LoginPage() {
     };
 
     const handlePasswordChange = (e) => {
-        const value = e.target.value;
-        setPassword(value);
-        setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
+        setPassword(e.target.value);
     };
 
     const handleLogin = async () => {
         const emailError = validateEmail(email);
-        const passwordError = validatePassword(password);
 
-        if (emailError || passwordError) {
-            setErrors({ email: emailError, password: passwordError });
+        if (emailError) {
+            setErrors({ email: emailError });
             return;
         }
 
@@ -65,7 +62,6 @@ function LoginPage() {
                 value={password}
                 onChange={handlePasswordChange}
             />
-            {errors.password && <p className="form-error">{errors.password}</p>}
             {errors.general && <p className="form-error">{errors.general}</p>}
             <button onClick={handleLogin} disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
