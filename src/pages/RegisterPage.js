@@ -1,79 +1,117 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import client from '../api/client';
+import { parseError } from '../api/errors';
+import { validateEmail, validatePassword, validatePhone, validateRequired } from '../utils/validation';
 
 function RegisterPage() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordCheck, setPasswordCheck] = useState('');
-    const [error, setError] = useState('');
+    const [fields, setFields] = useState({
+        firstName: '', lastName: '', email: '', phone: '', password: '', passwordCheck: ''
+    });
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const handleChange = (field, validator) => (e) => {
+        const value = e.target.value;
+        setFields((prev) => ({ ...prev, [field]: value }));
+        if (validator) {
+            setErrors((prev) => ({ ...prev, [field]: validator(value) }));
+        }
+    };
+
+    const handlePasswordCheckChange = (e) => {
+        const value = e.target.value;
+        setFields((prev) => ({ ...prev, passwordCheck: value }));
+        setErrors((prev) => ({
+            ...prev,
+            passwordCheck: value !== fields.password ? 'Passwords do not match.' : null,
+        }));
+    };
+
+    const validate = () => {
+        const newErrors = {
+            firstName: validateRequired(fields.firstName, 'First name'),
+            lastName: validateRequired(fields.lastName, 'Last name'),
+            email: validateEmail(fields.email),
+            phone: validatePhone(fields.phone),
+            password: validatePassword(fields.password),
+            passwordCheck: fields.password !== fields.passwordCheck ? 'Passwords do not match.' : null,
+        };
+        setErrors(newErrors);
+        return Object.values(newErrors).every((e) => !e);
+    };
+
     const handleRegister = async () => {
+        if (!validate()) return;
+
+        setLoading(true);
         try {
             await client.post('/users/register/', {
-                first_name: firstName,
-                last_name: lastName,
-                email,
-                phone,
-                password,
-                password_check: passwordCheck,
+                first_name: fields.firstName,
+                last_name: fields.lastName,
+                email: fields.email,
+                phone: fields.phone,
+                password: fields.password,
+                password_check: fields.passwordCheck,
             });
-            navigate('/login');
+            navigate('/login', { state: { message: 'Registration successful. Please check your email to verify your account.' } });
         } catch (err) {
-            setError(err.response?.data?.error || 'Щось пішло не так');
+            setErrors((prev) => ({ ...prev, general: parseError(err) }));
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div>
-            <h1>Реєстрація</h1>
+        <div className="form-container">
+            <h1>Sign Up</h1>
             <input
-                placeholder="Ім'я"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="First name"
+                value={fields.firstName}
+                onChange={handleChange('firstName', (v) => validateRequired(v, 'First name'))}
             />
-            <br/>
+            {errors.firstName && <p className="form-error">{errors.firstName}</p>}
             <input
-                placeholder="Прізвище"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Last name"
+                value={fields.lastName}
+                onChange={handleChange('lastName', (v) => validateRequired(v, 'Last name'))}
             />
-            <br/>
+            {errors.lastName && <p className="form-error">{errors.lastName}</p>}
             <input
                 type="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={fields.email}
+                onChange={handleChange('email', validateEmail)}
             />
-            <br/>
+            {errors.email && <p className="form-error">{errors.email}</p>}
             <input
-                placeholder="Телефон (+380...)"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone (+380...)"
+                value={fields.phone}
+                onChange={handleChange('phone', validatePhone)}
             />
-            <br/>
-            <input
-                type="password"
-                placeholder="Пароль"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <br/>
+            {errors.phone && <p className="form-error">{errors.phone}</p>}
             <input
                 type="password"
-                placeholder="Повторіть пароль"
-                value={passwordCheck}
-                onChange={(e) => setPasswordCheck(e.target.value)}
+                placeholder="Password"
+                value={fields.password}
+                onChange={handleChange('password', validatePassword)}
             />
-            <br/>
-            {error && <p>{error}</p>}
-            <button onClick={handleRegister}>Зареєструватись</button>
-            <br/>
-            <p onClick={() => navigate('/login')}>Вже є акаунт? Увійти</p>
+            {errors.password && <p className="form-error">{errors.password}</p>}
+            <input
+                type="password"
+                placeholder="Confirm password"
+                value={fields.passwordCheck}
+                onChange={handlePasswordCheckChange}
+            />
+            {errors.passwordCheck && <p className="form-error">{errors.passwordCheck}</p>}
+            {errors.general && <p className="form-error">{errors.general}</p>}
+            <button onClick={handleRegister} disabled={loading}>
+                {loading ? 'Signing up...' : 'Sign Up'}
+            </button>
+            <button className="form-link" onClick={() => navigate('/login')}>
+                Already have an account? Sign In
+            </button>
         </div>
     );
 }
