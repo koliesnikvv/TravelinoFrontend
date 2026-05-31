@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import client from '../api/client';
-import PersonalInfoSection from '../components/profile/PersonalInfoSection';
-import ChangePasswordSection from '../components/profile/ChangePasswordSection';
-import TravelPreferencesSection from '../components/profile/TravelPreferencesSection';
-import DeleteAccountSection from '../components/profile/DeleteAccountSection';
+import client from '../../api/client';
+import PersonalInfoSection from '../../components/profile/PersonalInfoSection';
+import ChangePasswordSection from '../../components/profile/ChangePasswordSection';
+import TravelPreferencesSection from '../../components/profile/TravelPreferencesSection';
+import DeleteAccountSection from '../../components/profile/DeleteAccountSection';
 
 function ProfilePage() {
     const [profile, setProfile] = useState(null);
