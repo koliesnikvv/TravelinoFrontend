@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 import client from '../../api/client';
 import { parseError } from '../../api/errors';
 import { validatePassword, validateRequired } from '../../utils/validation';
@@ -56,35 +57,41 @@ function ChangePasswordSection() {
     };
 
     return (
-        <section>
-            <h2>Change Password</h2>
-            <input
+        <Box display="flex" flexDirection="column" gap={2}>
+            <Typography variant="h6">Change Password</Typography>
+            <TextField
+                label="Current password"
                 type="password"
-                placeholder="Current password"
                 value={fields.current_password}
                 onChange={handleChange('current_password')}
+                error={!!errors.current_password}
+                helperText={errors.current_password}
+                fullWidth
             />
-            {errors.current_password && <p className="form-error">{errors.current_password}</p>}
-            <input
+            <TextField
+                label="New password"
                 type="password"
-                placeholder="New password"
                 value={fields.new_password}
                 onChange={handleChange('new_password')}
+                error={!!errors.new_password}
+                helperText={errors.new_password}
+                fullWidth
             />
-            {errors.new_password && <p className="form-error">{errors.new_password}</p>}
-            <input
+            <TextField
+                label="Confirm new password"
                 type="password"
-                placeholder="Confirm new password"
                 value={fields.new_password_check}
                 onChange={handleChange('new_password_check')}
+                error={!!errors.new_password_check}
+                helperText={errors.new_password_check}
+                fullWidth
             />
-            {errors.new_password_check && <p className="form-error">{errors.new_password_check}</p>}
-            {errors.general && <p className="form-error">{errors.general}</p>}
-            {message && <p className="form-success">{message}</p>}
-            <button onClick={handleSave} disabled={loading}>
+            {errors.general && <Alert severity="error">{errors.general}</Alert>}
+            {message && <Alert severity="success">{message}</Alert>}
+            <Button variant="contained" onClick={handleSave} disabled={loading}>
                 {loading ? 'Saving...' : 'Change Password'}
-            </button>
-        </section>
+            </Button>
+        </Box>
     );
 }
 

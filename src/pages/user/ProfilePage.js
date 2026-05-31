@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Box, Typography, Paper, Divider } from '@mui/material';
 import client from '../../api/client';
 import PersonalInfoSection from '../../components/profile/PersonalInfoSection';
 import ChangePasswordSection from '../../components/profile/ChangePasswordSection';
@@ -28,16 +29,29 @@ function ProfilePage() {
         fetchData();
     }, []);
 
-    if (!profile) return <p>Loading...</p>;
+    if (!profile) return <Typography sx={{ p: 4 }}>Loading...</Typography>;
 
     return (
-        <div className="page-container">
-            <h1>Profile</h1>
-            <PersonalInfoSection profile={profile} onUpdate={setProfile} />
-            <ChangePasswordSection />
-            <TravelPreferencesSection preferences={preferences} availablePreferences={availablePreferences} />
-            <DeleteAccountSection />
-        </div>
+        <Box maxWidth={800} mx="auto" px={4} py={5}>
+            <Typography variant="h4" mb={4}>Profile</Typography>
+            <Box display="flex" flexDirection="column" gap={3}>
+                <Paper sx={{ p: 4 }}>
+                    <PersonalInfoSection profile={profile} onUpdate={setProfile} />
+                </Paper>
+                <Paper sx={{ p: 4 }}>
+                    <ChangePasswordSection />
+                </Paper>
+                <Paper sx={{ p: 4 }}>
+                    <TravelPreferencesSection
+                        preferences={preferences}
+                        availablePreferences={availablePreferences}
+                    />
+                </Paper>
+                <Paper sx={{ p: 4 }}>
+                    <DeleteAccountSection />
+                </Paper>
+            </Box>
+        </Box>
     );
 }
 

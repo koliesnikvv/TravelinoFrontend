@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 import client from '../../api/client';
 import { parseError } from '../../api/errors';
 import { validatePhone, validateRequired } from '../../utils/validation';
@@ -44,33 +45,39 @@ function PersonalInfoSection({ profile, onUpdate }) {
     };
 
     return (
-        <section>
-            <h2>Personal Info</h2>
-            <p>Email: {profile.email}</p>
-            <input
-                placeholder="First name"
+        <Box display="flex" flexDirection="column" gap={2}>
+            <Typography variant="h6">Personal Info</Typography>
+            <Typography variant="body2" color="text.secondary">Email: {profile.email}</Typography>
+            <TextField
+                label="First name"
                 value={fields.first_name}
                 onChange={handleChange('first_name', (v) => validateRequired(v, 'First name'))}
+                error={!!errors.first_name}
+                helperText={errors.first_name}
+                fullWidth
             />
-            {errors.first_name && <p className="form-error">{errors.first_name}</p>}
-            <input
-                placeholder="Last name"
+            <TextField
+                label="Last name"
                 value={fields.last_name}
                 onChange={handleChange('last_name', (v) => validateRequired(v, 'Last name'))}
+                error={!!errors.last_name}
+                helperText={errors.last_name}
+                fullWidth
             />
-            {errors.last_name && <p className="form-error">{errors.last_name}</p>}
-            <input
-                placeholder="Phone (+380...)"
+            <TextField
+                label="Phone (+380...)"
                 value={fields.phone}
                 onChange={handleChange('phone', validatePhone)}
+                error={!!errors.phone}
+                helperText={errors.phone}
+                fullWidth
             />
-            {errors.phone && <p className="form-error">{errors.phone}</p>}
-            {errors.general && <p className="form-error">{errors.general}</p>}
-            {message && <p className="form-success">{message}</p>}
-            <button onClick={handleSave} disabled={loading}>
+            {errors.general && <Alert severity="error">{errors.general}</Alert>}
+            {message && <Alert severity="success">{message}</Alert>}
+            <Button variant="contained" onClick={handleSave} disabled={loading}>
                 {loading ? 'Saving...' : 'Save Changes'}
-            </button>
-        </section>
+            </Button>
+        </Box>
     );
 }
 
