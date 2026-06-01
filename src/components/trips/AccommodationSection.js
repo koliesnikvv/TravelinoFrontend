@@ -35,6 +35,7 @@ export default function AccommodationSection({ accommodation, onDelete }) {
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Button
                                         size="small"
+                                        // TODO: implement /trips/:id/accommodation/:acc_id page
                                         onClick={() => navigate(`/trips/${id}/accommodation/${item.id}`)}
                                     >
                                         View details
@@ -51,6 +52,7 @@ export default function AccommodationSection({ accommodation, onDelete }) {
 
             <Divider sx={{ mb: 2 }} />
 
+            // TODO: implement /trips/:id/accommodation/search page
             <Button variant="outlined" onClick={() => navigate(`/trips/${id}/accommodation/search`)}>
                 Add accommodation
             </Button>

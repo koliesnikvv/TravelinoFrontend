@@ -1,3 +1,5 @@
+
+// TODO: replace with real API calls
 export async function createTrip(data) {
     return {
         id: 'mock-trip-id-123',

@@ -38,6 +38,7 @@ export default function TransportSection({ transport, onDelete }) {
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <Button
                                         size="small"
+                                        // TODO: implement /trips/:id/transport/:transport_id
                                         onClick={() => navigate(`/trips/${id}/transport/${item.id}`)}
                                     >
                                         View details
@@ -54,6 +55,7 @@ export default function TransportSection({ transport, onDelete }) {
 
             <Divider sx={{ mb: 2 }} />
 
+            // TODO: implement /trips/:id/transport/search
             <Button variant="outlined" onClick={() => navigate(`/trips/${id}/transport/search`)}>
                 Add transport
             </Button>

@@ -48,6 +48,7 @@ export default function ActivitiesSection({ activities, onDelete }) {
 
             <Divider sx={{ mb: 2 }} />
 
+            // TODO: implement /trips/:id/activities page to add/edit activities in more detail
             <Button variant="outlined" onClick={() => navigate(`/trips/${id}/activities`)}>
                 Edit activities
             </Button>
