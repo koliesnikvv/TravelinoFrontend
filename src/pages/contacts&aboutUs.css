@@ -1,0 +1,191 @@
+.about-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.about-hero {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(26, 74, 74, 0.05), rgba(77, 182, 172, 0.1));
+    border-radius: 30px;
+}
+
+.about-hero h1 {
+    font-size: 3rem;
+    color: #1a4a4a;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.about-hero p {
+    font-size: 1.2rem;
+    color: #4db6ac;
+    font-weight: 500;
+}
+
+/* Секції */
+.about-section {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin-bottom: 60px;
+    padding: 30px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8f0f0;
+    transition: transform 0.3s ease;
+}
+
+.about-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(26, 74, 74, 0.1);
+}
+
+.about-section.reverse {
+    flex-direction: row-reverse;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text h2 {
+    font-size: 1.8rem;
+    color: #1a4a4a;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.about-text p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #2d5a5a;
+    margin-bottom: 15px;
+}
+
+.about-icon {
+    font-size: 80px;
+    min-width: 120px;
+    text-align: center;
+    background: linear-gradient(135deg, #e0f2fe, #b8e1e1);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.about-section:hover .about-icon {
+    transform: scale(1.1);
+}
+
+/* Цінності */
+.values-section {
+    margin-top: 60px;
+    text-align: center;
+}
+
+.values-section h2 {
+    font-size: 2rem;
+    color: #1a4a4a;
+    margin-bottom: 40px;
+    font-weight: 500;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.value-card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8f0f0;
+    transition: all 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    border-color: #4db6ac;
+    box-shadow: 0 10px 25px rgba(77, 182, 172, 0.15);
+}
+
+.value-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.value-card h3 {
+    font-size: 1.3rem;
+    color: #1a4a4a;
+    margin-bottom: 10px;
+}
+
+.value-card p {
+    font-size: 0.9rem;
+    color: #5a7a7a;
+    line-height: 1.5;
+}
+
+/* Анімація */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .about-page {
+        padding: 40px 15px;
+    }
+
+    .about-hero h1 {
+        font-size: 2rem;
+    }
+
+    .about-section {
+        flex-direction: column;
+        gap: 25px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .about-section.reverse {
+        flex-direction: column;
+    }
+
+    .about-icon {
+        font-size: 50px;
+        width: 90px;
+        height: 90px;
+    }
+
+    .about-text h2 {
+        font-size: 1.5rem;
+    }
+
+    .values-section h2 {
+        font-size: 1.6rem;
+    }
+
+    .values-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

@@ -1,75 +1,46 @@
-.page-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 0 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #e0f2fe, #b8e1e1, #80cbc4, #4db6ac);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
 }
 
-.page-container section {
-  background: #fff;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-.preferences-selected {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  min-height: 32px;
+:root {
+    font-family: 'Segoe UI', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: #1a4a4a;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
 }
-
-.preference-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 13px;
-  width: auto;
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
-
-.preference-tag--selected {
-  background: #222;
-  color: #fff;
-  border: 1px solid #222;
+body, .app-wrapper, main {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-
-.preference-tag-remove {
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  font-size: 15px;
-  padding: 0;
-  line-height: 1;
-  width: auto;
+input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
-
-.preferences-dropdown {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.preferences-dropdown-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.preferences-dropdown-item:hover {
-  background: #f5f5f5;
-}
-
-.preferences-empty {
-  padding: 8px 12px;
-  font-size: 14px;
-  color: #888;
+code, .selectable {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }

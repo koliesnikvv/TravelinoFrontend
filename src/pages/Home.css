@@ -1,0 +1,230 @@
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 50px;
+}
+
+.hero-section h1 {
+    font-size: 2.8rem;
+    color: #1a4a4a;
+    margin-bottom: 15px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    color: #5a7a7a;
+    font-weight: 400;
+}
+
+.filters-section {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    margin-bottom: 40px;
+    border: 1px solid #e8f0f0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: 1px solid #e0ecec;
+    border-radius: 50px;
+    background: #fafdfd;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #5f9e9e;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(95, 158, 158, 0.1);
+}
+
+.budget-filter {
+    margin: 25px 0 20px 0;
+}
+
+.budget-label, .categories-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8aa8a8;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.budget-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.budget-option {
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f5f8f8;
+    color: #5a7a7a;
+    border: none;
+}
+
+.budget-option:hover {
+    background: #e8f0f0;
+    color: #1a4a4a;
+}
+
+.budget-option.active {
+    background: #1a4a4a;
+    color: white;
+}
+
+.categories-filter {
+    margin-top: 20px;
+}
+
+.categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-chip {
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f5f8f8;
+    color: #5a7a7a;
+    border: none;
+}
+
+.category-chip:hover {
+    background: #e8f0f0;
+    color: #1a4a4a;
+}
+
+.category-chip.active {
+    background: #e8f0f0;
+    color: #1ea37a;
+    font-weight: 800;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e8f0f0;
+}
+
+.results-count {
+    color: #8aa8a8;
+    font-size: 0.85rem;
+}
+
+.clear-filters {
+    background: none;
+    border: none;
+    color: #5f9e9e;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.clear-filters:hover {
+    opacity: 1;
+}
+
+.cities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.loading-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #8aa8a8;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #e8f0f0;
+    border-top-color: #5f9e9e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fafdfd;
+    border-radius: 24px;
+    color: #8aa8a8;
+}
+
+.no-results button {
+    margin-top: 20px;
+    background: none;
+    border: 1px solid #dce8e8;
+    padding: 8px 24px;
+    border-radius: 30px;
+    color: #5a7a7a;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.no-results button:hover {
+    border-color: #5f9e9e;
+    color: #1a4a4a;
+}
+
+@media (max-width: 768px) {
+    .home-container {
+        padding: 20px;
+    }
+
+    .hero-section {
+        padding: 40px 20px;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .filters-section {
+        padding: 20px;
+    }
+
+    .budget-options, .categories-list {
+        gap: 6px;
+    }
+
+    .budget-option, .category-chip {
+        padding: 5px 14px;
+        font-size: 0.8rem;
+    }
+}
