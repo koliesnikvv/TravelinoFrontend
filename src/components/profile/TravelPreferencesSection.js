@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Box, Typography, TextField, Button, Alert, Chip } from '@mui/material';
 import client from '../../api/client';
 import { parseError } from '../../api/errors';
 
@@ -42,45 +43,70 @@ function TravelPreferencesSection({ preferences: initial, availablePreferences }
     };
 
     return (
-        <section>
-            <h2>Travel Preferences</h2>
-            <div className="preferences-selected">
+        <Box display="flex" flexDirection="column" gap={2}>
+            <Typography variant="h6">Travel Preferences</Typography>
+            <Box display="flex" flexWrap="wrap" gap={1}>
                 {preferences.map((pref) => (
-                    <span key={pref} className="preference-tag preference-tag--selected">
-                        {pref}
-                        <button className="preference-tag-remove" onClick={() => removePreference(pref)}>×</button>
-                    </span>
+                    <Chip
+                        key={pref}
+                        label={pref}
+                        onDelete={() => removePreference(pref)}
+                    />
                 ))}
-            </div>
-            <input
-                placeholder="Search preferences..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setTimeout(() => setFocused(false), 150)}
-            />
-            {focused && (
-                <div className="preferences-dropdown">
-                    {filteredOptions.length === 0 && (
-                        <p className="preferences-empty">No results</p>
-                    )}
-                    {filteredOptions.map((pref) => (
-                        <div
-                            key={pref}
-                            className="preferences-dropdown-item"
-                            onClick={() => addPreference(pref)}
-                        >
-                            {pref}
-                        </div>
-                    ))}
-                </div>
-            )}
-            {error && <p className="form-error">{error}</p>}
-            {message && <p className="form-success">{message}</p>}
-            <button onClick={handleSave} disabled={loading}>
+            </Box>
+            <Box position="relative">
+                <TextField
+                    label="Search preferences..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setTimeout(() => setFocused(false), 150)}
+                    fullWidth
+                />
+                {focused && (
+                    <Box
+                        position="absolute"
+                        top="100%"
+                        left={0}
+                        right={0}
+                        zIndex={10}
+                        bgcolor="background.paper"
+                        border="1px solid"
+                        borderColor="divider"
+                        borderRadius={1}
+                        maxHeight={200}
+                        overflow="auto"
+                        boxShadow={2}
+                    >
+                        {filteredOptions.length === 0 ? (
+                            <Typography variant="body2" color="text.secondary" sx={{ p: 1.5 }}>
+                                No results
+                            </Typography>
+                        ) : (
+                            filteredOptions.map((pref) => (
+                                <Box
+                                    key={pref}
+                                    onClick={() => addPreference(pref)}
+                                    sx={{
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        '&:hover': { bgcolor: 'action.hover' },
+                                    }}
+                                >
+                                    <Typography variant="body2">{pref}</Typography>
+                                </Box>
+                            ))
+                        )}
+                    </Box>
+                )}
+            </Box>
+            {error && <Alert severity="error">{error}</Alert>}
+            {message && <Alert severity="success">{message}</Alert>}
+            <Button variant="contained" onClick={handleSave} disabled={loading}>
                 {loading ? 'Saving...' : 'Save Preferences'}
-            </button>
-        </section>
+            </Button>
+        </Box>
     );
 }
 

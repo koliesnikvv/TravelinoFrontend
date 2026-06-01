@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import client from '../api/client';
-import { parseError } from '../api/errors';
-import { validateEmail, validatePassword, validatePhone, validateRequired } from '../utils/validation';
+import client from '../../api/client';
+import { parseError } from '../../api/errors';
+import { validateEmail, validatePassword, validatePhone, validateRequired } from '../../utils/validation';
 
 function RegisterPage() {
     const [fields, setFields] = useState({

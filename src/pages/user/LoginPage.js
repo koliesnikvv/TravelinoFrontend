@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import client from '../api/client';
-import { parseError } from '../api/errors';
-import { validateEmail } from '../utils/validation';
+import client from '../../api/client';
+import { parseError } from '../../api/errors';
+import { validateEmail } from '../../utils/validation';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
