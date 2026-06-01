@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import client from '../api/client';
-import { parseError } from '../api/errors';
-import { validatePassword } from '../utils/validation';
+import client from '../../api/client';
+import { parseError } from '../../api/errors';
+import { validatePassword } from '../../utils/validation';
 
 function ResetPasswordPage() {
     const [password, setPassword] = useState('');

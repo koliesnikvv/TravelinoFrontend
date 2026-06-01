@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import client from '../../api/client';
 import { parseError } from '../../api/errors';
@@ -29,20 +30,23 @@ function DeleteAccountSection() {
     };
 
     return (
-        <section>
-            <h2>Delete Account</h2>
-            <p>This action is irreversible. Enter your password to confirm.</p>
-            <input
+        <Box display="flex" flexDirection="column" gap={2}>
+            <Typography variant="h6">Delete Account</Typography>
+            <Typography variant="body2" color="text.secondary">
+                This action is irreversible. Enter your password to confirm.
+            </Typography>
+            <TextField
+                label="Your password"
                 type="password"
-                placeholder="Your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                fullWidth
             />
-            {error && <p className="form-error">{error}</p>}
-            <button onClick={handleDelete} disabled={loading}>
+            {error && <Alert severity="error">{error}</Alert>}
+            <Button variant="contained" color="error" onClick={handleDelete} disabled={loading}>
                 {loading ? 'Deleting...' : 'Delete Account'}
-            </button>
-        </section>
+            </Button>
+        </Box>
     );
 }
 
