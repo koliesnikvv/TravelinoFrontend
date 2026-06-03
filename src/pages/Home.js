@@ -137,7 +137,7 @@ function Home() {
         <div className="home-container">
             <div className="hero-section">
                 <h1>Discover Your Next Destination</h1>
-                <p>Personalized travel planning powered by your preferences</p>
+                <p>Personalized travel planner!</p>
                 <button className="preferences-btn" onClick={openModal}>
                     Set your preferences
                 </button>
@@ -146,7 +146,7 @@ function Home() {
             <div className="search-section">
                 <input
                     type="text"
-                    placeholder="Search by city or country..."
+                    placeholder="Search by country..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyPress={handleSearchKeyPress}
@@ -208,13 +208,13 @@ function Home() {
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2>Your Travel Preferences</h2>
+                            <h2>Your travel preferences</h2>
                             <button className="modal-close" onClick={closeModal}>✕</button>
                         </div>
 
                         <div className="modal-body">
                             <div className="budget-filter">
-                                <div className="budget-label">💰 BUDGET</div>
+                                <div className="budget-label">BUDGET</div>
                                 <div className="budget-options">
                                     <button
                                         className={`budget-option ${selectedBudget === '' ? 'active' : ''}`}
