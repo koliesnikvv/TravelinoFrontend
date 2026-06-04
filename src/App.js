@@ -31,7 +31,7 @@ function App() {
                         <Route path="/email-confirmed" element={<EmailConfirmedPage />} />
                         <Route path="/email-error" element={<EmailErrorPage />} />
                         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                        <Route path="/reset-password" element={<ResetPasswordPage />} />
+                        <Route path="/reset-password/:uid/:token" element={<ResetPasswordPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/trips" element={<TripsPage />} />
                         <Route path="/trips/new" element={<CreateTripPage />} />
