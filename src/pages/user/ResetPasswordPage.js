@@ -39,7 +39,7 @@ function ResetPasswordPage() {
 
         setLoading(true);
         try {
-            const response = await client.post(`/users/reset-password/${uid}/${token}/`, {
+            const response = await client.post(`http://localhost:3000/reset-password/${uid}/${token}/`,{
                 new_password: password,
             });
             setMessage(response.data.message);
