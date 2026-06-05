@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getTrips } from '../api/trips';
 
 function TripsPage() {
     const [trips, setTrips] = useState([]);
@@ -7,7 +8,7 @@ function TripsPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem('access');
         if (!token) {
             navigate('/login');
             return;
@@ -18,17 +19,8 @@ function TripsPage() {
 
     const fetchTrips = async () => {
         try {
-            const token = localStorage.getItem('access_token');
-            const response = await fetch('http://localhost:8000/api/trips/', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setTrips(data.results || data);
-            }
+            const data = await getTrips();
+            setTrips(data.results || data);
         } catch (error) {
             console.error('Error fetching trips:', error);
         } finally {
@@ -54,10 +46,10 @@ function TripsPage() {
                 <div className="trips-grid">
                     {trips.map(trip => (
                         <div key={trip.id} className="trip-card">
-                            <h3>{trip.name || trip.city?.name}</h3>
-                            <p>{trip.city?.name}, {trip.city?.country}</p>
+                            <h3>{trip.title}</h3>
+                            <p>{trip.city_name}</p>
                             <p>{trip.start_date} → {trip.end_date}</p>
-                            <button onClick={() => navigate(`/trip/${trip.id}`)}>
+                            <button onClick={() => navigate(`/trips/${trip.id}`)}>
                                 View Trip
                             </button>
                         </div>

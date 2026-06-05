@@ -2,7 +2,7 @@ import { Box, Typography, IconButton, Button, Card, CardContent, Chip, Divider }
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function TransportSection({ transport, onDelete }) {
+export default function TransportSection({ transport, onDelete, canEdit }) {
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -43,9 +43,11 @@ export default function TransportSection({ transport, onDelete }) {
                                     >
                                         View details
                                     </Button>
-                                    <IconButton size="small" onClick={() => onDelete(item.id)}>
-                                        <CloseIcon fontSize="small" />
-                                    </IconButton>
+                                    {canEdit && (
+                                        <IconButton size="small" onClick={() => onDelete(item.id)}>
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    )}
                                 </Box>
                             </CardContent>
                         </Card>
@@ -55,10 +57,12 @@ export default function TransportSection({ transport, onDelete }) {
 
             <Divider sx={{ mb: 2 }} />
 
-            // TODO: implement /trips/:id/transport/search
-            <Button variant="outlined" onClick={() => navigate(`/trips/${id}/transport/search`)}>
-                Add transport
-            </Button>
+            {canEdit && (
+                // TODO: implement /trips/:id/transport/search
+                <Button variant="outlined" onClick={() => navigate(`/trips/${id}/transport/search`)}>
+                    Add transport
+                </Button>
+            )}
         </Box>
     );
 }

@@ -7,8 +7,15 @@ import TripHeader from '../../components/trips/TripHeader';
 import TransportSection from '../../components/trips/TransportSection';
 import AccommodationSection from '../../components/trips/AccommodationSection';
 import ActivitiesSection from '../../components/trips/ActivitiesSection';
+import ParticipantsSection from '../../components/trips/ParticipantsSection';
 import CalendarPanel from '../../components/trips/CalendarPanel';
-import { getTripDetail, updateTrip } from '../../api/trips';
+import {
+    getTripDetail,
+    updateTrip,
+    deleteTransportBooking,
+    deleteAccommodationBooking,
+    deleteTripActivity,
+} from '../../api/trips';
 import { parseError } from '../../api/errors';
 
 export default function TripPage() {
@@ -16,18 +23,19 @@ export default function TripPage() {
 
     const [trip, setTrip] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [loadError, setLoadError] = useState(null);
+    const [saveError, setSaveError] = useState(null);
     const [showCalendar, setShowCalendar] = useState(false);
 
     useEffect(() => {
         async function loadTrip() {
             setLoading(true);
-            setError(null);
+            setLoadError(null);
             try {
                 const data = await getTripDetail(id);
                 setTrip(data);
             } catch (err) {
-                setError(parseError(err));
+                setLoadError(parseError(err));
             } finally {
                 setLoading(false);
             }
@@ -36,33 +44,66 @@ export default function TripPage() {
         loadTrip();
     }, [id]);
 
+    // current_user_role is returned by the backend as 'owner', 'edit', or 'view'
+    const canEdit = trip?.current_user_role === 'owner' || trip?.current_user_role === 'edit';
+
     async function handleSave(data) {
+        setSaveError(null);
         try {
             const updated = await updateTrip(id, data);
             setTrip((prev) => ({ ...prev, ...updated }));
         } catch (err) {
-            setError(parseError(err));
+            setSaveError(parseError(err));
         }
     }
 
-    function handleDeleteTransport(itemId) {
+    async function handleDeleteTransport(itemId) {
+        try {
+            await deleteTransportBooking(id, itemId);
+            setTrip((prev) => ({
+                ...prev,
+                transport: prev.transport.filter((t) => t.id !== itemId),
+            }));
+        } catch (err) {
+            setSaveError(parseError(err));
+        }
+    }
+
+    async function handleDeleteAccommodation(itemId) {
+        try {
+            await deleteAccommodationBooking(id, itemId);
+            setTrip((prev) => ({
+                ...prev,
+                accommodation: prev.accommodation.filter((a) => a.id !== itemId),
+            }));
+        } catch (err) {
+            setSaveError(parseError(err));
+        }
+    }
+
+    async function handleDeleteActivity(itemId) {
+        try {
+            await deleteTripActivity(id, itemId);
+            setTrip((prev) => ({
+                ...prev,
+                activities: prev.activities.filter((a) => a.id !== itemId),
+            }));
+        } catch (err) {
+            setSaveError(parseError(err));
+        }
+    }
+
+    function handleAddParticipant(participant) {
         setTrip((prev) => ({
             ...prev,
-            transport: prev.transport.filter((t) => t.id !== itemId),
+            participants: [...prev.participants, participant],
         }));
     }
 
-    function handleDeleteAccommodation(itemId) {
+    function handleDeleteParticipant(participantId) {
         setTrip((prev) => ({
             ...prev,
-            accommodation: prev.accommodation.filter((a) => a.id !== itemId),
-        }));
-    }
-
-    function handleDeleteActivity(itemId) {
-        setTrip((prev) => ({
-            ...prev,
-            activities: prev.activities.filter((a) => a.id !== itemId),
+            participants: prev.participants.filter((p) => p.id !== participantId),
         }));
     }
 
@@ -78,10 +119,10 @@ export default function TripPage() {
         );
     }
 
-    if (error) {
+    if (loadError) {
         return (
             <Container maxWidth="md" sx={{ mt: 6 }}>
-                <Alert severity="error">{error}</Alert>
+                <Alert severity="error">{loadError}</Alert>
             </Container>
         );
     }
@@ -110,10 +151,38 @@ export default function TripPage() {
 
                 <Box sx={{ display: 'flex', gap: 4 }}>
                     <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <TripHeader trip={trip} onSave={handleSave} />
-                        <TransportSection transport={trip.transport} onDelete={handleDeleteTransport} />
-                        <AccommodationSection accommodation={trip.accommodation} onDelete={handleDeleteAccommodation} />
-                        <ActivitiesSection activities={trip.activities} onDelete={handleDeleteActivity} />
+                        {saveError && (
+                            <Alert
+                                severity="error"
+                                onClose={() => setSaveError(null)}
+                                sx={{ mb: 2 }}
+                            >
+                                {saveError}
+                            </Alert>
+                        )}
+
+                        <TripHeader trip={trip} onSave={handleSave} canEdit={canEdit} />
+                        <TransportSection
+                            transport={trip.transport}
+                            onDelete={handleDeleteTransport}
+                            canEdit={canEdit}
+                        />
+                        <AccommodationSection
+                            accommodation={trip.accommodation}
+                            onDelete={handleDeleteAccommodation}
+                            canEdit={canEdit}
+                        />
+                        <ActivitiesSection
+                            activities={trip.activities}
+                            onDelete={handleDeleteActivity}
+                            canEdit={canEdit}
+                        />
+                        <ParticipantsSection
+                            participants={trip.participants}
+                            onAdd={handleAddParticipant}
+                            onDelete={handleDeleteParticipant}
+                            canEdit={canEdit}
+                        />
                     </Box>
 
                     {showCalendar && (

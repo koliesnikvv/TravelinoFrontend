@@ -2,7 +2,7 @@ import { Box, Typography, IconButton, Button, Divider, List, ListItem, ListItemT
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function ActivitiesSection({ activities, onDelete }) {
+export default function ActivitiesSection({ activities, onDelete, canEdit }) {
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -31,9 +31,11 @@ export default function ActivitiesSection({ activities, onDelete }) {
                         <ListItem
                             key={item.id}
                             secondaryAction={
-                                <IconButton size="small" onClick={() => onDelete(item.id)}>
-                                    <CloseIcon fontSize="small" />
-                                </IconButton>
+                                canEdit ? (
+                                    <IconButton size="small" onClick={() => onDelete(item.id)}>
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                ) : null
                             }
                             divider
                         >
@@ -48,10 +50,12 @@ export default function ActivitiesSection({ activities, onDelete }) {
 
             <Divider sx={{ mb: 2 }} />
 
-            // TODO: implement /trips/:id/activities page to add/edit activities in more detail
-            <Button variant="outlined" onClick={() => navigate(`/trips/${id}/activities`)}>
-                Edit activities
-            </Button>
+            {canEdit && (
+                // TODO: implement /trips/:id/activities page to add/edit activities in more detail
+                <Button variant="outlined" onClick={() => navigate(`/trips/${id}/activities`)}>
+                    Edit activities
+                </Button>
+            )}
         </Box>
     );
 }

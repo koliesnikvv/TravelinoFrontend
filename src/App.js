@@ -16,6 +16,7 @@ import ResetPasswordPage from "./pages/user/ResetPasswordPage";
 import Scroll from "./components/layout/Scroll";
 import CreateTripPage from "./pages/trips/CreateTripPage";
 import TripPage from "./pages/trips/TripPage";
+import AcceptInvitePage from "./pages/user/AcceptInvitePage";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
                         <Route path="/trips/:id" element={<TripPage />} />
                         <Route path="/about" element={<AboutUs />} />
                         <Route path="/contact" element={<Contacts />} />
+                        <Route path="/invite/accept" element={<AcceptInvitePage />} />
                     </Routes>
                 </main>
                 <Footer />

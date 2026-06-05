@@ -2,7 +2,7 @@ import { Box, Typography, IconButton, Button, Card, CardContent, Chip, Divider }
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function AccommodationSection({ accommodation, onDelete }) {
+export default function AccommodationSection({ accommodation, onDelete, canEdit }) {
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -40,9 +40,11 @@ export default function AccommodationSection({ accommodation, onDelete }) {
                                     >
                                         View details
                                     </Button>
-                                    <IconButton size="small" onClick={() => onDelete(item.id)}>
-                                        <CloseIcon fontSize="small" />
-                                    </IconButton>
+                                    {canEdit && (
+                                        <IconButton size="small" onClick={() => onDelete(item.id)}>
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    )}
                                 </Box>
                             </CardContent>
                         </Card>
@@ -52,10 +54,11 @@ export default function AccommodationSection({ accommodation, onDelete }) {
 
             <Divider sx={{ mb: 2 }} />
 
-            // TODO: implement /trips/:id/accommodation/search page
-            <Button variant="outlined" onClick={() => navigate(`/trips/${id}/accommodation/search`)}>
-                Add accommodation
-            </Button>
+            {canEdit && (
+                <Button variant="outlined" onClick={() => navigate(`/trips/${id}/accommodation/search`)}>
+                    Add accommodation
+                </Button>
+            )}
         </Box>
     );
 }

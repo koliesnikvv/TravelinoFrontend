@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DateRangePicker from '../DateRangePicker';
 import dayjs from 'dayjs';
 
-export default function TripHeader({ trip, onSave }) {
+export default function TripHeader({ trip, onSave, canEdit }) {
     const [editingTitle, setEditingTitle] = useState(false);
     const [editingDates, setEditingDates] = useState(false);
     const [title, setTitle] = useState(trip.title);
@@ -41,7 +41,7 @@ export default function TripHeader({ trip, onSave }) {
     return (
         <Box sx={{ mb: 4 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                {editingTitle ? (
+                {canEdit && editingTitle ? (
                     <TextField
                         value={title}
                         onChange={handleTitleChange}
@@ -56,19 +56,21 @@ export default function TripHeader({ trip, onSave }) {
                         <Typography variant="h4" component="h1">
                             {title}
                         </Typography>
-                        <EditIcon
-                            fontSize="small"
-                            color="action"
-                            sx={{ cursor: 'pointer' }}
-                            onClick={() => setEditingTitle(true)}
-                        />
+                        {canEdit && (
+                            <EditIcon
+                                fontSize="small"
+                                color="action"
+                                sx={{ cursor: 'pointer' }}
+                                onClick={() => setEditingTitle(true)}
+                            />
+                        )}
                     </Box>
                 )}
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                 <Chip label={trip.city_name} variant="outlined" />
-                {editingDates ? (
+                {canEdit && editingDates ? (
                     <DateRangePicker
                         startDate={startDate}
                         endDate={endDate}
@@ -80,17 +82,19 @@ export default function TripHeader({ trip, onSave }) {
                         <Typography variant="body2" color="text.secondary">
                             {trip.start_date} — {trip.end_date}
                         </Typography>
-                        <EditIcon
-                            fontSize="small"
-                            color="action"
-                            sx={{ cursor: 'pointer' }}
-                            onClick={() => setEditingDates(true)}
-                        />
+                        {canEdit && (
+                            <EditIcon
+                                fontSize="small"
+                                color="action"
+                                sx={{ cursor: 'pointer' }}
+                                onClick={() => setEditingDates(true)}
+                            />
+                        )}
                     </Box>
                 )}
             </Box>
 
-            {isDirty && (
+            {isDirty && canEdit && (
                 <Button variant="contained" size="small" onClick={handleSave}>
                     Save
                 </Button>

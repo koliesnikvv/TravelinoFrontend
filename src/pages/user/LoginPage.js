@@ -37,7 +37,10 @@ function LoginPage() {
             const response = await client.post('/users/login/', { email, password });
             localStorage.setItem('access', response.data.access);
             localStorage.setItem('refresh', response.data.refresh);
-            navigate('/');
+
+            const searchParams = new URLSearchParams(location.search);
+            const next = searchParams.get('next');
+            navigate(next || '/');
         } catch (err) {
             setErrors({ general: parseError(err) });
         } finally {
