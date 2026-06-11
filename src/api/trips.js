@@ -7,7 +7,6 @@ export async function getTrips() {
 }
 
 // POST /api/trips/
-// data: { title, city_id, start_date, end_date }
 export async function createTrip(data) {
     const response = await client.post('/trips/', {
         title: data.title,
@@ -25,7 +24,6 @@ export async function getTripDetail(tripId) {
 }
 
 // PATCH /api/trips/{id}/
-// data: { title?, start_date?, end_date? }
 export async function updateTrip(tripId, data) {
     const response = await client.patch(`/trips/${tripId}/`, data);
     return response.data;
@@ -35,6 +33,34 @@ export async function updateTrip(tripId, data) {
 export async function deleteTrip(tripId) {
     await client.delete(`/trips/${tripId}/`);
     return null;
+}
+
+// GET /api/trips/{id}/export/?activities=true&transport=true&accommodation=true
+// Returns a .ics file blob and triggers browser download.
+// options: { activities: bool, transport: bool, accommodation: bool }
+export async function exportTripICS(tripId, tripTitle, options) {
+    const params = new URLSearchParams({
+        activities: String(options.activities),
+        transport: String(options.transport),
+        accommodation: String(options.accommodation),
+    });
+
+    const response = await client.get(`/trips/${tripId}/export/?${params}`, {
+        responseType: 'blob',
+    });
+
+    // If the server returned an error, the blob will be JSON — parse and throw it.
+    if (response.data.type === 'application/json') {
+        const text = await response.data.text();
+        throw new Error(JSON.parse(text)?.detail || 'Export failed');
+    }
+
+    const url = URL.createObjectURL(response.data);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${tripTitle || 'trip'}.ics`;
+    link.click();
+    URL.revokeObjectURL(url);
 }
 
 // POST /api/trips/{tripId}/transport/
@@ -74,7 +100,6 @@ export async function deleteTripActivity(tripId, itemId) {
 }
 
 // POST /api/trips/{tripId}/participants/
-// data: { invitee_email, access_level: 'View' | 'Edit' }
 export async function inviteParticipant(tripId, data) {
     const response = await client.post(`/trips/${tripId}/participants/`, data);
     return response.data;
