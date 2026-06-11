@@ -1,4 +1,6 @@
 import client from './client';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+
 
 // GET /api/trips/
 export async function getTrips() {
@@ -91,3 +93,33 @@ export async function acceptInvite(tripId, participantId) {
     const response = await client.post(`/trips/${tripId}/participants/${participantId}/accept/`);
     return response.data;
 }
+
+export const getTrip = async (tripId) => {
+    const token = localStorage.getItem('access');
+    const response = await fetch(`${API_URL}/trips/${tripId}/`, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch trip');
+    return await response.json();
+};
+export const addTransportBooking = async (tripId, transportData) => {
+    const token = localStorage.getItem('access');
+    const response = await fetch(`${API_URL}/trips/${tripId}/transport/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(transportData),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to add transport');
+    }
+    return await response.json();
+};

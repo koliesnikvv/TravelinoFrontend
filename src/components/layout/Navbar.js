@@ -55,6 +55,8 @@ function Navbar() {
                         <>
                             <Link to="/login" className="nav-link">Login</Link>
                             <Link to="/register" className="nav-link register-btn">Sign Up</Link>
+                            <Link to="/flights" className="nav-link">Flights</Link>
+
                         </>
                     )}
                 </div>

@@ -4,7 +4,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AboutUs from "./pages/AboutUs";
 import Contacts from "./pages/Contacts";
-import {BrowserRouter, Routes, Route, Scripts} from 'react-router-dom';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import TripsPage from "./pages/TripsPage";
 import ProfilePage from './pages/user/ProfilePage';
 import LoginPage from './pages/user/LoginPage';
@@ -17,6 +17,8 @@ import Scroll from "./components/layout/Scroll";
 import CreateTripPage from "./pages/trips/CreateTripPage";
 import TripPage from "./pages/trips/TripPage";
 import AcceptInvitePage from "./pages/user/AcceptInvitePage";
+import FlightResultsPage from "./pages/flights/FlightResultsPage";
+import FlightSearchPage from "./pages/flights/FlightSearchPage";
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
                         <Route path="/trips/:id" element={<TripPage />} />
                         <Route path="/about" element={<AboutUs />} />
                         <Route path="/contact" element={<Contacts />} />
+                        <Route path="/flights" element={<FlightSearchPage />} />
+                        <Route path="/flights/results" element={<FlightResultsPage />} />
                         <Route path="/invite/accept" element={<AcceptInvitePage />} />
                     </Routes>
                 </main>
