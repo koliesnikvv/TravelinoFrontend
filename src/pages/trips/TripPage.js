@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Container, CircularProgress, Alert, Button } from '@mui/material';
+import { Box, CircularProgress, Alert, Button } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import TripHeader from '../../components/trips/TripHeader';
@@ -9,12 +9,15 @@ import AccommodationSection from '../../components/trips/AccommodationSection';
 import ActivitiesSection from '../../components/trips/ActivitiesSection';
 import ParticipantsSection from '../../components/trips/ParticipantsSection';
 import CalendarPanel from '../../components/trips/CalendarPanel';
+import CalendarResizePanel from '../../components/trips/CalendarResizePanel';
+import ExportCalendarModal from '../../components/trips/ExportCalendarModal';
 import {
     getTripDetail,
     updateTrip,
     deleteTransportBooking,
     deleteAccommodationBooking,
     deleteTripActivity,
+    exportTripICS,
 } from '../../api/trips';
 import { parseError } from '../../api/errors';
 
@@ -26,6 +29,7 @@ export default function TripPage() {
     const [loadError, setLoadError] = useState(null);
     const [saveError, setSaveError] = useState(null);
     const [showCalendar, setShowCalendar] = useState(false);
+    const [exportModalOpen, setExportModalOpen] = useState(false);
 
     useEffect(() => {
         async function loadTrip() {
@@ -40,11 +44,9 @@ export default function TripPage() {
                 setLoading(false);
             }
         }
-
         loadTrip();
     }, [id]);
 
-    // current_user_role is returned by the backend as 'owner', 'edit', or 'view'
     const canEdit = trip?.current_user_role === 'owner' || trip?.current_user_role === 'edit';
 
     async function handleSave(data) {
@@ -107,8 +109,12 @@ export default function TripPage() {
         }));
     }
 
-    function handleExport() {
-        console.log('export to calendar');
+    async function handleExport(options) {
+        try {
+            await exportTripICS(id, trip.title, options);
+        } catch (err) {
+            setSaveError(parseError(err));
+        }
     }
 
     if (loading) {
@@ -121,77 +127,85 @@ export default function TripPage() {
 
     if (loadError) {
         return (
-            <Container maxWidth="md" sx={{ mt: 6 }}>
+            <Box sx={{ maxWidth: 720, mx: 'auto', px: 3, mt: 6 }}>
                 <Alert severity="error">{loadError}</Alert>
-            </Container>
+            </Box>
         );
     }
 
     if (!trip) return null;
 
     return (
-        <Container maxWidth={showCalendar ? 'xl' : 'md'}>
-            <Box sx={{ mt: 6, mb: 4 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mb: 3 }}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<FileDownloadIcon />}
-                        onClick={handleExport}
-                    >
-                        Export to calendar
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        startIcon={<CalendarMonthIcon />}
-                        onClick={() => setShowCalendar((prev) => !prev)}
-                    >
-                        {showCalendar ? 'Hide calendar' : 'Show calendar'}
-                    </Button>
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: 4 }}>
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                        {saveError && (
-                            <Alert
-                                severity="error"
-                                onClose={() => setSaveError(null)}
-                                sx={{ mb: 2 }}
-                            >
-                                {saveError}
-                            </Alert>
-                        )}
-
-                        <TripHeader trip={trip} onSave={handleSave} canEdit={canEdit} />
-                        <TransportSection
-                            transport={trip.transport}
-                            onDelete={handleDeleteTransport}
-                            canEdit={canEdit}
-                        />
-                        <AccommodationSection
-                            accommodation={trip.accommodation}
-                            onDelete={handleDeleteAccommodation}
-                            canEdit={canEdit}
-                        />
-                        <ActivitiesSection
-                            activities={trip.activities}
-                            onDelete={handleDeleteActivity}
-                            canEdit={canEdit}
-                        />
-                        <ParticipantsSection
-                            participants={trip.participants}
-                            onAdd={handleAddParticipant}
-                            onDelete={handleDeleteParticipant}
-                            canEdit={canEdit}
-                        />
-                    </Box>
-
-                    {showCalendar && (
-                        <Box sx={{ width: 400, flexShrink: 0 }}>
-                            <CalendarPanel />
-                        </Box>
-                    )}
-                </Box>
+        <Box sx={{ px: 4, mt: 6, mb: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mb: 3 }}>
+                <Button
+                    variant="outlined"
+                    startIcon={<FileDownloadIcon />}
+                    onClick={() => setExportModalOpen(true)}
+                >
+                    Export to calendar
+                </Button>
+                <Button
+                    variant="outlined"
+                    startIcon={<CalendarMonthIcon />}
+                    onClick={() => setShowCalendar((prev) => !prev)}
+                >
+                    {showCalendar ? 'Hide calendar' : 'Show calendar'}
+                </Button>
             </Box>
-        </Container>
+
+            <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
+                <Box sx={{
+                    flex: 1,
+                    minWidth: 0,
+                    maxWidth: showCalendar ? 'none' : 720,
+                    mx: showCalendar ? 0 : 'auto',
+                }}>
+                    {saveError && (
+                        <Alert
+                            severity="error"
+                            onClose={() => setSaveError(null)}
+                            sx={{ mb: 2 }}
+                        >
+                            {saveError}
+                        </Alert>
+                    )}
+                    <TripHeader trip={trip} onSave={handleSave} canEdit={canEdit} />
+                    <TransportSection
+                        transport={trip.transport}
+                        onDelete={handleDeleteTransport}
+                        canEdit={canEdit}
+                    />
+                    <AccommodationSection
+                        accommodation={trip.accommodation}
+                        onDelete={handleDeleteAccommodation}
+                        canEdit={canEdit}
+                    />
+                    <ActivitiesSection
+                        activities={trip.activities}
+                        onDelete={handleDeleteActivity}
+                        canEdit={canEdit}
+                    />
+                    <ParticipantsSection
+                        participants={trip.participants}
+                        onAdd={handleAddParticipant}
+                        onDelete={handleDeleteParticipant}
+                        canEdit={canEdit}
+                    />
+                </Box>
+
+                {showCalendar && (
+                    <CalendarResizePanel>
+                        <CalendarPanel trip={trip} />
+                    </CalendarResizePanel>
+                )}
+            </Box>
+
+            <ExportCalendarModal
+                open={exportModalOpen}
+                onClose={() => setExportModalOpen(false)}
+                onExport={handleExport}
+            />
+        </Box>
     );
 }
