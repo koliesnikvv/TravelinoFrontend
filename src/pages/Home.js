@@ -3,11 +3,12 @@ import { useEffect, useState, useCallback } from 'react';
 import { getCities } from '../api/catalog';
 import CityCard from '../components/city/CityCard';
 import { useNavigate } from 'react-router-dom';
+import Loading from "../components/animations/Loading";
+
 
 function Home() {
     const [cities, setCities] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedBudget, setSelectedBudget] = useState('');
@@ -18,6 +19,9 @@ function Home() {
 
     const categories = ['Culture', 'Nature', 'Beaches', 'Nightlife', 'Cuisine', 'Adventure', 'History', 'Shopping'];
     const budgetLevels = ['Low', 'Medium', 'High', 'Luxury'];
+
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         const loadCities = async () => {
@@ -112,13 +116,8 @@ function Home() {
         applyFilters();
     };
 
-    if (loading) {
-        return (
-            <div className="loading-state">
-                <div className="loading-spinner"></div>
-                <p>Loading amazing destinations...</p>
-            </div>
-        );
+   if (loading) {
+        return <Loading />;
     }
 
     if (error) {
