@@ -78,7 +78,7 @@ export default function CityDetailPage() {
             {/* Кнопка планування */}
             <div className="plan-trip-section">
                 <button className="plan-trip-btn" onClick={handlePlanTrip}>
-                    ✈️ Plan trip to {city.city}
+                     Plan trip to {city.city}
                 </button>
             </div>
         </div>

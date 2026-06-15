@@ -9,6 +9,7 @@
 
 .metric-header {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
@@ -16,17 +17,14 @@
     border-bottom: 2px solid rgba(77, 182, 172, 0.15);
 }
 
-.metric-icon {
-    font-size: 1.4rem;
-    filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(140deg) saturate(300%);
-}
-
 .metric-title {
-    font-size: 0.8rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    color: #5a7a7a;
+    color: #1a4a4a;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
+    text-align: center;
+    width: 100%;
 }
 
 .emergency-table {
@@ -41,6 +39,7 @@
     border-bottom: 1px solid rgba(77, 182, 172, 0.1);
     border-radius: 8px;
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
 }
 
 .emergency-row:hover {
@@ -70,7 +69,7 @@
 }
 
 .emergency-note {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     color: #5a7a7a;
     padding: 12px;
     background-color: rgba(0, 0, 0, 0.03);
@@ -96,5 +95,11 @@
     }
     .emergency-label {
         font-size: 0.65rem;
+    }
+    .metric-title {
+        font-size: 1rem;
+    }
+    .emergency-note {
+        font-size: 0.8rem;
     }
 }
