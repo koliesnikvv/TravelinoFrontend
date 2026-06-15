@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton, Button, Card, CardContent, Chip, Divider, Avatar } from '@mui/material';
+import { Box, Typography, IconButton, Button, Card, CardContent, Divider, Avatar } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import TourIcon from '@mui/icons-material/Tour';
 import ScheduleIcon from '@mui/icons-material/Schedule';
@@ -28,32 +28,32 @@ export default function ActivitiesSection({ activities = [], onDelete, canEdit, 
 
     return (
         <Box sx={{ mb: 4 }}>
-            <Typography 
-                variant="h6" 
-                sx={{ 
-                    mb: 2.5, 
-                    color: '#1a4a4a', 
-                    fontWeight: 600, 
-                    display: 'flex', 
-                    alignItems: 'center', 
+            <Typography
+                variant="h6"
+                sx={{
+                    mb: 2.5,
+                    color: '#1a4a4a',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 1,
                     fontSize: '1.15rem'
                 }}
             >
-                <TourIcon sx={{ color: '#1a4a4a', fontSize: 20 }} /> 
+                <TourIcon sx={{ color: '#1a4a4a', fontSize: 20 }} />
                 Activities
             </Typography>
 
             {activities.length === 0 ? (
-                <Card 
-                    variant="outlined" 
-                    sx={{ 
-                        borderRadius: 4, 
-                        borderColor: 'rgba(26, 74, 74, 0.12)', 
+                <Card
+                    variant="outlined"
+                    sx={{
+                        borderRadius: 4,
+                        borderColor: 'rgba(26, 74, 74, 0.12)',
                         bgcolor: 'rgba(255, 255, 255, 0.4)',
                         backdropFilter: 'blur(8px)',
-                        p: 3, 
-                        textAlign: 'center' 
+                        p: 3,
+                        textAlign: 'center'
                     }}
                 >
                     <Typography variant="body2" sx={{ color: '#5a7a7a', fontStyle: 'italic' }}>
@@ -67,12 +67,12 @@ export default function ActivitiesSection({ activities = [], onDelete, canEdit, 
                         const start = dayjs(`${item.scheduled_date}T${item.start_time}`);
                         const end = dayjs(`${item.scheduled_date}T${item.end_time}`);
                         const duration = formatDuration(start, end);
-                        
+
                         return (
-                            <Card 
-                                key={item.id} 
-                                sx={{ 
-                                    borderRadius: 4, 
+                            <Card
+                                key={item.id}
+                                sx={{
+                                    borderRadius: 4,
                                     border: '1px solid rgba(255, 255, 255, 0.6)',
                                     bgcolor: 'rgba(255, 255, 255, 0.8)',
                                     backdropFilter: 'blur(12px)',
@@ -87,13 +87,12 @@ export default function ActivitiesSection({ activities = [], onDelete, canEdit, 
                             >
                                 <CardContent sx={{ p: '20px !important' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: { xs: 1, sm: 2 } }}>
-                                        
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
-                                            <Avatar 
-                                                sx={{ 
-                                                    bgcolor: '#1a4a4a', 
-                                                    color: '#ffffff', 
-                                                    width: 44, 
+                                            <Avatar
+                                                sx={{
+                                                    bgcolor: '#1a4a4a',
+                                                    color: '#ffffff',
+                                                    width: 44,
                                                     height: 44,
                                                     boxShadow: '0 4px 10px rgba(26, 74, 74, 0.15)',
                                                     flexShrink: 0
@@ -101,28 +100,11 @@ export default function ActivitiesSection({ activities = [], onDelete, canEdit, 
                                             >
                                                 <TourIcon />
                                             </Avatar>
-                                            
-                                            <Box sx={{ minWidth: 0 }}>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
-                                                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1a4a4a', lineHeight: 1.2 }}>
-                                                        {activityTitle}
-                                                    </Typography>
-                                                    {item.activity?.category && (
-                                                        <Chip 
-                                                            label={item.activity.category} 
-                                                            size="small" 
-                                                            sx={{ 
-                                                                bgcolor: 'rgba(26, 74, 74, 0.06)', 
-                                                                color: '#1a4a4a',
-                                                                fontWeight: 600,
-                                                                fontSize: '0.7rem',
-                                                                height: 20,
-                                                                ml: 0.5
-                                                            }} 
-                                                        />
-                                                    )}
-                                                </Box>
 
+                                            <Box sx={{ minWidth: 0 }}>
+                                                <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1a4a4a', lineHeight: 1.2, mb: 0.5 }}>
+                                                    {activityTitle}
+                                                </Typography>
                                                 <Typography variant="body2" sx={{ color: '#5a7a7a', display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
                                                     <ScheduleIcon sx={{ fontSize: 14, color: '#8aa8a8' }} />
                                                     {dayjs(item.scheduled_date).format('MMM D')} · {item.start_time} — {item.end_time}
@@ -137,16 +119,16 @@ export default function ActivitiesSection({ activities = [], onDelete, canEdit, 
 
                                         {canEdit && (
                                             <Box sx={{ flexShrink: 0, ml: 1 }}>
-                                                <IconButton 
-                                                    onClick={() => onDelete(item.id)} 
-                                                    disableRipple 
-                                                    sx={{ 
+                                                <IconButton
+                                                    onClick={() => onDelete(item.id)}
+                                                    disableRipple
+                                                    sx={{
                                                         color: '#8aa8a8',
-                                                        p: 0, 
+                                                        p: 0,
                                                         transition: 'all 0.3s ease',
                                                         borderRadius: '50%',
                                                         padding: '6px',
-                                                        '&:hover': { 
+                                                        '&:hover': {
                                                             backgroundColor: 'rgba(196, 122, 122, 0.15)',
                                                             color: '#c47a7a',
                                                             transform: 'scale(1.15)'
@@ -172,11 +154,11 @@ export default function ActivitiesSection({ activities = [], onDelete, canEdit, 
                         variant="contained"
                         onClick={handleAddActivity}
                         startIcon={<TourIcon />}
-                        sx={{ 
-                            borderRadius: 8, 
-                            bgcolor: '#1a4a4a', 
-                            color: '#ffffff', 
-                            textTransform: 'none', 
+                        sx={{
+                            borderRadius: 8,
+                            bgcolor: '#1a4a4a',
+                            color: '#ffffff',
+                            textTransform: 'none',
                             px: 3.5,
                             py: 1,
                             fontWeight: 600,
