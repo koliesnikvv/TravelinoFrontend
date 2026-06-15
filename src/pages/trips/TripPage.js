@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, CircularProgress, Alert, Button } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, CircularProgress, Alert, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import CancelIcon from '@mui/icons-material/Cancel';
 import TripHeader from '../../components/trips/TripHeader';
 import TransportSection from '../../components/trips/TransportSection';
 import AccommodationSection from '../../components/trips/AccommodationSection';
@@ -18,12 +19,14 @@ import {
     deleteAccommodationBooking,
     deleteTripActivity,
     exportTripICS,
+    deleteTrip,
 } from '../../api/trips';
 import { parseError } from '../../api/errors';
 import Loading from "../../components/animations/Loading";
 
 export default function TripPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [trip, setTrip] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -31,6 +34,8 @@ export default function TripPage() {
     const [saveError, setSaveError] = useState(null);
     const [showCalendar, setShowCalendar] = useState(false);
     const [exportModalOpen, setExportModalOpen] = useState(false);
+    const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+    const [cancelling, setCancelling] = useState(false);
 
     useEffect(() => {
         async function loadTrip() {
@@ -49,6 +54,7 @@ export default function TripPage() {
     }, [id]);
 
     const canEdit = trip?.current_user_role === 'owner' || trip?.current_user_role === 'edit';
+    const isOwner = trip?.current_user_role === 'owner';
 
     async function handleSave(data) {
         setSaveError(null);
@@ -117,7 +123,20 @@ export default function TripPage() {
             setSaveError(parseError(err));
         }
     }
-if (loading) {
+
+    async function handleCancelTrip() {
+        setCancelling(true);
+        try {
+            await deleteTrip(id);
+            navigate('/trips');
+        } catch (err) {
+            setSaveError(parseError(err));
+            setCancelling(false);
+            setCancelDialogOpen(false);
+        }
+    }
+
+    if (loading) {
         return <Loading />;
     }
 
@@ -171,11 +190,13 @@ if (loading) {
                         transport={trip.transport}
                         onDelete={handleDeleteTransport}
                         canEdit={canEdit}
+                        trip={trip}
                     />
                     <AccommodationSection
                         accommodation={trip.accommodation}
                         onDelete={handleDeleteAccommodation}
                         canEdit={canEdit}
+                        trip={trip}
                     />
                     <ActivitiesSection
                         activities={trip.activities}
@@ -189,6 +210,31 @@ if (loading) {
                         onDelete={handleDeleteParticipant}
                         canEdit={canEdit}
                     />
+
+
+                    {isOwner && (
+                        <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid rgba(77,182,172,0.2)', textAlign: 'center' }}>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                startIcon={<CancelIcon />}
+                                onClick={() => setCancelDialogOpen(true)}
+                                sx={{
+                                    borderRadius: 8,
+                                    px: 4,
+                                    py: 1.5,
+                                    textTransform: 'none',
+                                    fontWeight: 600,
+                                    borderWidth: 2,
+                                    '&:hover': {
+                                        borderWidth: 2,
+                                    },
+                                }}
+                            >
+                                Cancel Trip
+                            </Button>
+                        </Box>
+                    )}
                 </Box>
 
                 {showCalendar && (
@@ -203,6 +249,39 @@ if (loading) {
                 onClose={() => setExportModalOpen(false)}
                 onExport={handleExport}
             />
+
+            {/* Діалог підтвердження скасування */}
+            <Dialog
+                open={cancelDialogOpen}
+                onClose={() => !cancelling && setCancelDialogOpen(false)}
+            >
+                <DialogTitle sx={{ color: '#d32f2f' }}>
+                    Cancel trip?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to cancel "{trip?.title}"? 
+                        This action cannot be undone. All your bookings and plans will be permanently deleted.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={() => setCancelDialogOpen(false)} 
+                        disabled={cancelling}
+                        sx={{ color: '#5a7a7a' }}
+                    >
+                        Keep Trip
+                    </Button>
+                    <Button 
+                        onClick={handleCancelTrip} 
+                        color="error" 
+                        variant="contained"
+                        disabled={cancelling}
+                    >
+                        {cancelling ? 'Cancelling...' : 'Yes, Cancel Trip'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

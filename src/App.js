@@ -20,6 +20,7 @@ import AcceptInvitePage from "./pages/user/AcceptInvitePage";
 import TransportSearchPage from "./pages/trips/TransportSearchPage";
 import AccommodationSearchPage from './pages/trips/AccommodationSearchPage';
 import ActivitySearchPage from './pages/trips/ActivitySearchPage';
+import CityDetailPage from './pages/cities/CityDetailPage';  
 
 function App() {
     return (
@@ -49,6 +50,8 @@ function App() {
                         <Route path="/trips/:id/accommodation/search" element={<AccommodationSearchPage />} />
                         <Route path="/trips/:id/activities/search" element={<ActivitySearchPage />} />
 
+                        {/* НОВИЙ МАРШРУТ для детальної сторінки міста */}
+                        <Route path="/cities/:id" element={<CityDetailPage />} />
                     </Routes>
                 </main>
                 <Footer />
