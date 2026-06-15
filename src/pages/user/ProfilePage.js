@@ -5,15 +5,20 @@ import PersonalInfoSection from '../../components/profile/PersonalInfoSection';
 import ChangePasswordSection from '../../components/profile/ChangePasswordSection';
 import TravelPreferencesSection from '../../components/profile/TravelPreferencesSection';
 import DeleteAccountSection from '../../components/profile/DeleteAccountSection';
+import VisitedCountriesMap from "../VisitedCountriesMap";
+import Loading from "../../components/animations/Loading";
 
 function ProfilePage() {
     const [profile, setProfile] = useState(null);
     const [preferences, setPreferences] = useState([]);
     const [availablePreferences, setAvailablePreferences] = useState([]);
+    const [activeTab, setActiveTab] = useState('info');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 const [profileRes, preferencesRes, optionsRes] = await Promise.all([
                     client.get('/users/profile/'),
                     client.get('/users/profile/preferences/'),
@@ -25,9 +30,16 @@ function ProfilePage() {
             } catch (err) {
                 console.error('Failed to load profile:', err);
             }
+            finally {
+                setLoading(false);
+            }
         };
         fetchData();
     }, []);
+
+    if (loading) {
+        return <Loading />;
+    }
 
     if (!profile) return <Typography sx={{ p: 4 }}>Loading...</Typography>;
 
@@ -46,6 +58,9 @@ function ProfilePage() {
                         preferences={preferences}
                         availablePreferences={availablePreferences}
                     />
+                </Paper>
+                 <Paper sx={{ p: 4 }}>
+                    <VisitedCountriesMap />
                 </Paper>
                 <Paper sx={{ p: 4 }}>
                     <DeleteAccountSection />

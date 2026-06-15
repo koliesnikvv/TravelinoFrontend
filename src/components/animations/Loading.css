@@ -1,0 +1,51 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 50px 20px;
+  min-height: 200px;
+}
+
+.orbit-loader {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.orbit {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #294f7c;
+  border-radius: 50%;
+  position: relative;
+  animation: rotate 3s infinite linear;
+}
+
+.flying-plane {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  animation: plane-tilt 1s infinite ease-in-out;
+}
+
+.loading-title {
+  color: #294f7c;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes plane-tilt {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(10deg); }
+}

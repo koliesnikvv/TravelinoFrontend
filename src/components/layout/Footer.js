@@ -10,7 +10,7 @@ function Footer() {
                 <div className="footer-section">
                     <h3 className="footer-logo">✈Travellino</h3>
                     <p className="footer-description">
-                        Your personal travel planner for unforgettable adventures.
+                        Your personal travel planner for unforgettable adventures
                     </p>
                 </div>
 

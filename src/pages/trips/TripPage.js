@@ -20,6 +20,7 @@ import {
     exportTripICS,
 } from '../../api/trips';
 import { parseError } from '../../api/errors';
+import Loading from "../../components/animations/Loading";
 
 export default function TripPage() {
     const { id } = useParams();
@@ -116,13 +117,8 @@ export default function TripPage() {
             setSaveError(parseError(err));
         }
     }
-
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-                <CircularProgress />
-            </Box>
-        );
+if (loading) {
+        return <Loading />;
     }
 
     if (loadError) {
