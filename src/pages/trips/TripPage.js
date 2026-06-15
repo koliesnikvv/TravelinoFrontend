@@ -181,6 +181,7 @@ if (loading) {
                         activities={trip.activities}
                         onDelete={handleDeleteActivity}
                         canEdit={canEdit}
+                        trip={trip}
                     />
                     <ParticipantsSection
                         participants={trip.participants}
