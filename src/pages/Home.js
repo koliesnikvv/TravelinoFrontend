@@ -1,131 +1,157 @@
 import './Home.css';
-import { useEffect, useState, useCallback } from 'react';
-import { getCities } from '../api/catalog';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { getCities, getRecommendedCities } from '../api/catalog';
 import CityCard from '../components/city/CityCard';
 import { useNavigate } from 'react-router-dom';
-import Loading from "../components/animations/Loading";
+import Loading from '../components/animations/Loading';
 
+const DEBOUNCE_MS = 400;
+
+const CATEGORY_OPTIONS = [
+    { label: 'Culture',    value: 'culture' },
+    { label: 'Adventure',  value: 'adventure' },
+    { label: 'Nature',     value: 'nature' },
+    { label: 'Beaches',    value: 'beaches' },
+    { label: 'Nightlife',  value: 'nightlife' },
+    { label: 'Cuisine',    value: 'cuisine' },
+    { label: 'Wellness',   value: 'wellness' },
+    { label: 'Urban',      value: 'urban' },
+    { label: 'Seclusion',  value: 'seclusion' },
+];
+
+const BUDGET_OPTIONS = [
+    { label: 'Budget',    value: 'Budget' },
+    { label: 'Mid-range', value: 'Mid-range' },
+    { label: 'Luxury',    value: 'Luxury' },
+];
+
+const PAGE_SIZE = 12;
 
 function Home() {
     const [cities, setCities] = useState([]);
-    const [filteredCities, setFilteredCities] = useState([]);
-    const [error, setError] = useState(null);
+    const [totalCount, setTotalCount] = useState(0);
+    const [hasNext, setHasNext] = useState(false);
+    const [page, setPage] = useState(1);
+
+    const [recommendedCities, setRecommendedCities] = useState([]);
+    const [recommendedLoading, setRecommendedLoading] = useState(false);
+    const isLoggedIn = !!localStorage.getItem('access');
+
     const [searchTerm, setSearchTerm] = useState('');
+    const [committedSearch, setCommittedSearch] = useState('');
     const [selectedBudget, setSelectedBudget] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [hasPreferences, setHasPreferences] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [error, setError] = useState(null);
+
+    const debounceTimer = useRef(null);
     const navigate = useNavigate();
 
-    const categories = ['Culture', 'Nature', 'Beaches', 'Nightlife', 'Cuisine', 'Adventure', 'History', 'Shopping'];
-    const budgetLevels = ['Low', 'Medium', 'High', 'Luxury'];
-
-    const [loading, setLoading] = useState(true);
-
-
-    useEffect(() => {
-        const loadCities = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const data = await getCities();
-
-                if (data && data.length > 0) {
-                    setCities(data);
-                    setFilteredCities(data);
-                } else {
-                    setError('No cities found. Please check if the backend server is running.');
-                }
-            } catch (err) {
-                console.error('Error loading cities:', err);
-                setError('Failed to load cities. Make sure the backend is running on http://localhost:8000');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadCities();
+    const buildParams = useCallback((pageNum, search, budget, categories) => {
+        const params = { page: pageNum, page_size: PAGE_SIZE };
+        if (search.trim()) params.search = search.trim();
+        if (budget) params.budget_level = budget;
+        if (categories.length > 0) params.categories = categories.join(',');
+        return params;
     }, []);
 
-    const applyFilters = useCallback(() => {
-        let filtered = [...cities];
-
-        if (searchTerm.trim()) {
-            const term = searchTerm.toLowerCase().trim();
-            filtered = filtered.filter(city =>
-                city.name?.toLowerCase().includes(term) ||
-                city.country?.toLowerCase().includes(term)
-            );
+    const fetchCities = useCallback(async (search, budget, categories) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const params = buildParams(1, search, budget, categories);
+            const data = await getCities(params);
+            setCities(data.results || []);
+            setTotalCount(data.count || 0);
+            setHasNext(!!data.next);
+            setPage(1);
+        } catch (err) {
+            console.error('Error loading cities:', err);
+            setError('Failed to load cities.');
+        } finally {
+            setLoading(false);
         }
+    }, [buildParams]);
 
-        if (selectedBudget && hasPreferences) {
-            filtered = filtered.filter(city => city.budget_level === selectedBudget);
+    const fetchMore = useCallback(async () => {
+        if (loadingMore || !hasNext) return;
+        setLoadingMore(true);
+        try {
+            const nextPage = page + 1;
+            const params = buildParams(nextPage, committedSearch, selectedBudget, selectedCategories);
+            const data = await getCities(params);
+            setCities(prev => [...prev, ...(data.results || [])]);
+            setHasNext(!!data.next);
+            setPage(nextPage);
+        } catch (err) {
+            console.error('Error loading more cities:', err);
+        } finally {
+            setLoadingMore(false);
         }
-
-        if (selectedCategories.length > 0 && hasPreferences) {
-            filtered = filtered.filter(city =>
-                city.categories?.some(cat => selectedCategories.includes(cat))
-            );
-        }
-
-        setFilteredCities(filtered);
-    }, [cities, searchTerm, selectedBudget, selectedCategories, hasPreferences]);
+    }, [loadingMore, hasNext, page, committedSearch, selectedBudget, selectedCategories, buildParams]);
 
     useEffect(() => {
-        applyFilters();
-    }, [applyFilters]);
+        if (!isLoggedIn) return;
+        setRecommendedLoading(true);
+        getRecommendedCities()
+            .then(data => setRecommendedCities(Array.isArray(data) ? data : []))
+            .catch(() => setRecommendedCities([]))
+            .finally(() => setRecommendedLoading(false));
+    }, []);
+
+    useEffect(() => {
+        fetchCities('', '', []);
+    }, []);
+
+    useEffect(() => {
+        clearTimeout(debounceTimer.current);
+        debounceTimer.current = setTimeout(() => {
+            setCommittedSearch(searchTerm);
+            fetchCities(searchTerm, selectedBudget, selectedCategories);
+        }, DEBOUNCE_MS);
+        return () => clearTimeout(debounceTimer.current);
+    }, [searchTerm]);
 
     const handleCityClick = (cityId) => {
         navigate(`/trips/new?city=${cityId}`);
     };
 
-    const toggleCategory = (category) => {
+    const handleCreateTrip = () => {
+        navigate('/trips/new');
+    };
+
+    const toggleCategory = (value) => {
         setSelectedCategories(prev =>
-            prev.includes(category)
-                ? prev.filter(c => c !== category)
-                : [...prev, category]
+            prev.includes(value) ? prev.filter(c => c !== value) : [...prev, value]
         );
     };
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
     const applyPreferences = () => {
-        setHasPreferences(true);
-        closeModal();
+        setIsModalOpen(false);
+        fetchCities(committedSearch, selectedBudget, selectedCategories);
     };
 
     const clearAllPreferences = () => {
         setSelectedBudget('');
         setSelectedCategories([]);
         setSearchTerm('');
-        setHasPreferences(false);
+        setCommittedSearch('');
+        fetchCities('', '', []);
     };
 
-    const handleSearchKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            applyFilters();
-        }
-    };
-    const handleSearchClick = () => {
-        applyFilters();
-    };
+    const hasActiveFilters = selectedBudget || selectedCategories.length > 0;
 
-   if (loading) {
-        return <Loading />;
-    }
+    if (loading) return <Loading />;
 
     if (error) {
         return (
             <div className="error-state">
                 <h2>Unable to load destinations</h2>
                 <p>{error}</p>
-                <button onClick={() => window.location.reload()} className="retry-btn">
+                <button onClick={() => fetchCities(committedSearch, selectedBudget, selectedCategories)} className="retry-btn">
                     Try Again
                 </button>
             </div>
@@ -137,22 +163,53 @@ function Home() {
             <div className="hero-section">
                 <h1>Discover Your Next Destination</h1>
                 <p>Personalized travel planner!</p>
-                <button className="preferences-btn" onClick={openModal}>
-                    Set your preferences
-                </button>
+                <div className="hero-actions">
+                    {isLoggedIn && (
+                        <button className="create-trip-btn" onClick={handleCreateTrip}>
+                            Plan a trip
+                        </button>
+                    )}
+                </div>
             </div>
+
+            {isLoggedIn && (recommendedLoading || recommendedCities.length > 0) && (
+                <div className="recommended-section">
+                    <div className="recommended-header">
+                        <h2 className="recommended-title">Recommended for you</h2>
+                    </div>
+                    {recommendedLoading ? (
+                        <div className="recommended-loading">
+                            <div className="loading-spinner" />
+                        </div>
+                    ) : (
+                        <div className="recommended-scroll">
+                            {recommendedCities.map(city => (
+                                <div className="recommended-card-wrap" key={city.id}>
+                                    <CityCard
+                                        city={city}
+                                        onClick={() => handleCityClick(city.id)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="search-section">
                 <input
                     type="text"
-                    placeholder="Search by country..."
+                    placeholder="Search by city or country..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyPress={handleSearchKeyPress}
                     className="search-input"
                 />
+                <button className="preferences-btn" onClick={() => setIsModalOpen(true)}>
+                    Set your preferences
+                </button>
             </div>
-            {hasPreferences && (
+
+            {hasActiveFilters && (
                 <div className="active-preferences">
                     <div className="preferences-header">
                         <span>Active filters:</span>
@@ -164,13 +221,20 @@ function Home() {
                         {selectedBudget && (
                             <span className="preference-tag">
                                 Budget: {selectedBudget}
-                                <button onClick={() => setSelectedBudget('')}>×</button>
+                                <button onClick={() => {
+                                    setSelectedBudget('');
+                                    fetchCities(committedSearch, '', selectedCategories);
+                                }}>×</button>
                             </span>
                         )}
                         {selectedCategories.map(cat => (
                             <span key={cat} className="preference-tag">
-                                {cat}
-                                <button onClick={() => toggleCategory(cat)}>×</button>
+                                {CATEGORY_OPTIONS.find(c => c.value === cat)?.label || cat}
+                                <button onClick={() => {
+                                    const next = selectedCategories.filter(c => c !== cat);
+                                    setSelectedCategories(next);
+                                    fetchCities(committedSearch, selectedBudget, next);
+                                }}>×</button>
                             </span>
                         ))}
                     </div>
@@ -179,36 +243,49 @@ function Home() {
 
             <div className="results-header">
                 <div className="results-count">
-                    {filteredCities.length} destinations found
-                    {searchTerm && ` for "${searchTerm}"`}
-                    {hasPreferences ? ' (filtered by your preferences)' : ''}
+                    {totalCount} destination{totalCount !== 1 ? 's' : ''} found
+                    {committedSearch && ` for "${committedSearch}"`}
+                    {hasActiveFilters ? ' (filtered)' : ''}
                 </div>
             </div>
 
-            {filteredCities.length === 0 ? (
+            {cities.length === 0 ? (
                 <div className="no-results">
                     <p>No destinations match your criteria.</p>
-                    <button onClick={clearAllPreferences}>
-                        Clear all filters
-                    </button>
+                    <button onClick={clearAllPreferences}>Clear all filters</button>
                 </div>
             ) : (
-                <div className="cities-grid">
-                    {filteredCities.map(city => (
-                        <CityCard
-                            key={city.id}
-                            city={city}
-                            onClick={() => handleCityClick(city.id)}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="cities-grid">
+                        {cities.map(city => (
+                            <CityCard
+                                key={city.id}
+                                city={city}
+                                onClick={() => handleCityClick(city.id)}
+                            />
+                        ))}
+                    </div>
+
+                    {hasNext && (
+                        <div className="load-more-section">
+                            <button
+                                className="load-more-btn"
+                                onClick={fetchMore}
+                                disabled={loadingMore}
+                            >
+                                {loadingMore ? 'Loading...' : 'Load more'}
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
+
             {isModalOpen && (
-                <div className="modal-overlay" onClick={closeModal}>
+                <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <h2>Your travel preferences</h2>
-                            <button className="modal-close" onClick={closeModal}>✕</button>
+                            <button className="modal-close" onClick={() => setIsModalOpen(false)}>✕</button>
                         </div>
 
                         <div className="modal-body">
@@ -221,13 +298,13 @@ function Home() {
                                     >
                                         Any
                                     </button>
-                                    {budgetLevels.map(level => (
+                                    {BUDGET_OPTIONS.map(({ label, value }) => (
                                         <button
-                                            key={level}
-                                            className={`budget-option ${selectedBudget === level ? 'active' : ''}`}
-                                            onClick={() => setSelectedBudget(level)}
+                                            key={value}
+                                            className={`budget-option ${selectedBudget === value ? 'active' : ''}`}
+                                            onClick={() => setSelectedBudget(value)}
                                         >
-                                            {level}
+                                            {label}
                                         </button>
                                     ))}
                                 </div>
@@ -236,13 +313,13 @@ function Home() {
                             <div className="categories-filter">
                                 <div className="categories-label">INTERESTS</div>
                                 <div className="categories-list">
-                                    {categories.map(category => (
+                                    {CATEGORY_OPTIONS.map(({ label, value }) => (
                                         <button
-                                            key={category}
-                                            className={`category-chip ${selectedCategories.includes(category) ? 'active' : ''}`}
-                                            onClick={() => toggleCategory(category)}
+                                            key={value}
+                                            className={`category-chip ${selectedCategories.includes(value) ? 'active' : ''}`}
+                                            onClick={() => toggleCategory(value)}
                                         >
-                                            {category}
+                                            {label}
                                         </button>
                                     ))}
                                 </div>
@@ -250,11 +327,11 @@ function Home() {
                         </div>
 
                         <div className="modal-footer">
-                            <button className="modal-cancel" onClick={closeModal}>
+                            <button className="modal-cancel" onClick={() => setIsModalOpen(false)}>
                                 Cancel
                             </button>
                             <button className="modal-apply" onClick={applyPreferences}>
-                                Apply Preferences
+                                Apply
                             </button>
                         </div>
                     </div>
