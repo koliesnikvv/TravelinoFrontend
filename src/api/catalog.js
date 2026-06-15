@@ -1,15 +1,19 @@
 import client from './client';
 
+// GET /api/catalog/cities/?search=&budget_level=&categories=&page=&page_size=
+// Returns: { count, next, previous, results }
 export const getCities = async (params = {}) => {
     try {
         const response = await client.get('/catalog/cities/', { params });
         const data = response.data;
-        if (data.results) return data.results;
-        if (Array.isArray(data)) return data;
-        return [];
+        // paginated response
+        if (data.results !== undefined) return data;
+        // fallback: plain array
+        if (Array.isArray(data)) return { count: data.length, next: null, previous: null, results: data };
+        return { count: 0, next: null, previous: null, results: [] };
     } catch (error) {
         console.error('Error fetching cities:', error);
-        return [];
+        return { count: 0, next: null, previous: null, results: [] };
     }
 };
 
@@ -24,7 +28,8 @@ export const getRecommendedCities = async () => {
         return response.data;
     } catch (error) {
         console.error('Error fetching recommended cities:', error);
-        return getCities();
+        const data = await getCities();
+        return data.results || [];
     }
 };
 
@@ -39,7 +44,6 @@ export const getActivities = async (params = {}) => {
 };
 
 // GET /api/catalog/activities/<xid>/
-// Returns: { xid, name, description, kinds, image, address, otm_url }
 export const getActivityDetail = async (xid) => {
     const response = await client.get(`/catalog/activities/${xid}/`);
     return response.data;
