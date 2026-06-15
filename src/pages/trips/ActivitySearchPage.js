@@ -9,6 +9,7 @@ import ActivitySearchForm from '../../components/trips/ActivitySearchForm';
 import ActivityResultCard from '../../components/trips/ActivityResultCard';
 import ActivityDetailModal from '../../components/trips/ActivityDetailModal';
 import ActivityScheduleModal from '../../components/trips/ActivityScheduleModal';
+import Loading from '../../components/animations/Loading';
 
 const PROGRESS_MESSAGES = [
     'Analyzing your request...',
@@ -59,6 +60,37 @@ const S = {
         animation: 'spin 1s linear infinite',
         margin: '0 auto',
     },
+    aiBadge: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        background: 'linear-gradient(135deg, rgba(77,182,172,0.15), rgba(38,166,154,0.1))',
+        border: '1px solid rgba(77,182,172,0.35)',
+        borderRadius: 20,
+        padding: '4px 12px',
+        fontSize: 12,
+        fontWeight: 600,
+        color: '#2e7d7d',
+        letterSpacing: '0.03em',
+    },
+    overlay: {
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1300,
+        background: 'rgba(255,255,255,0.85)',
+        backdropFilter: 'blur(6px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 16,
+    },
+    overlayText: {
+        fontSize: 16,
+        fontWeight: 600,
+        color: '#2e7d7d',
+        fontFamily: "'Segoe UI', sans-serif",
+    },
 };
 
 export default function ActivitySearchPage() {
@@ -80,6 +112,7 @@ export default function ActivitySearchPage() {
     const [total, setTotal] = useState(0);
     const [hasNext, setHasNext] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
     const [searched, setSearched] = useState(false);
     const [err, setErr] = useState(null);
@@ -169,7 +202,6 @@ export default function ActivitySearchPage() {
     const openDetail = async (act) => {
         setDetailErr(null);
         setDetailLoading(true);
-        // Show basic info immediately, fill in details as they load
         setDetailPlace({ xid: act.xid, name: act.name, kinds: act.kinds, labels: act.labels, rate: act.rate });
         try {
             const detail = await getActivityDetail(act.xid);
@@ -203,7 +235,7 @@ export default function ActivitySearchPage() {
         try {
             await createTripActivity(tripId, {
                 activity: null,
-                activity_name: schedulePlace.name,   // saved so TripActivity shows the real name
+                activity_name: schedulePlace.name,
                 activity_details_id: schedulePlace.xid,
                 scheduled_date: scheduledDate.format('YYYY-MM-DD'),
                 start_time: startTime.format('HH:mm:ss'),
@@ -217,18 +249,52 @@ export default function ActivitySearchPage() {
         }
     };
 
+    // First auto-search — blocks the whole page with overlay
     useEffect(() => {
-        if (cityId) search();
+        if (!cityId) return;
+        const runInitial = async () => {
+            setInitialLoading(true);
+            setSearched(true);
+            setErr(null);
+            try {
+                const data = await getActivities(buildParams(1));
+                setResults(data.results);
+                setPage(data.page);
+                setTotal(data.total);
+                setHasNext(data.has_next);
+            } catch (e) {
+                setErr(parseError(e));
+            } finally {
+                setInitialLoading(false);
+            }
+        };
+        runInitial();
     }, [cityId]);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+
+            {/* Full-page blocking overlay for the first auto-search only */}
+            {initialLoading && (
+                <div style={S.overlay}>
+                    <Loading />
+                    <div style={S.overlayText}>Finding the best places for you...</div>
+                </div>
+            )}
+
             <div style={S.page}>
                 <div style={S.wrap}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
                         <button style={S.btnOutline} onClick={() => navigate(`/trips/${tripId}`)}>← Back</button>
                         <h1 style={{ margin: 0 }}>Search Activities</h1>
+                        {/* AI badge */}
+                        <div style={S.aiBadge}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 0 6h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1 0-6h1V6a4 4 0 0 1 4-4z"/>
+                            </svg>
+                            Powered by AI
+                        </div>
                     </div>
 
                     <ActivitySearchForm
@@ -250,7 +316,7 @@ export default function ActivitySearchPage() {
                         </div>
                     )}
 
-                    {!loading && searched && results.length === 0 && !err && (
+                    {!loading && !initialLoading && searched && results.length === 0 && !err && (
                         <div style={{ textAlign: 'center', marginTop: 48, color: '#5a9090' }}>
                             No activities found
                         </div>
