@@ -1,0 +1,157 @@
+.city-detail-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.city-hero {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(26, 74, 74, 0.05), rgba(77, 182, 172, 0.1));
+    border-radius: 32px;
+}
+
+.city-hero h1 {
+    font-size: 2.8rem;
+    color: #1a4a4a;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.city-region {
+    font-size: 1rem;
+    color: #5a7a7a;
+    margin-bottom: 12px;
+}
+
+.city-budget {
+    display: inline-block;
+    padding: 4px 16px;
+    background: #1a4a4a;
+    color: white;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.city-description {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #2d5a5a;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin: 32px 0;
+}
+
+.plan-trip-section {
+    text-align: center;
+    margin: 40px 0 20px;
+}
+
+.plan-trip-btn {
+    background: linear-gradient(135deg, #1a4a4a, #2d6a6a);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(26, 74, 74, 0.3);
+}
+
+.plan-trip-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(26, 74, 74, 0.4);
+    background: linear-gradient(135deg, #2d6a6a, #1a4a4a);
+}
+
+.error-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #c47a7a;
+    font-size: 1.1rem;
+}
+
+
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-card:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.metric-icon {
+    font-size: 1.2rem;
+}
+
+.metric-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #5a7a7a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-main {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.metric-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.metric-unit {
+    font-size: 0.7rem;
+    color: #8aa8a8;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .city-detail-page {
+        padding: 20px 16px;
+    }
+    
+    .city-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

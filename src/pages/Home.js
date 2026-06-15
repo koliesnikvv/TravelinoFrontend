@@ -115,9 +115,10 @@ function Home() {
         return () => clearTimeout(debounceTimer.current);
     }, [searchTerm]);
 
-    const handleCityClick = (cityId) => {
-        navigate(`/trips/new?city=${cityId}`);
-    };
+
+const handleCityClick = (cityId) => {
+    navigate(`/cities/${cityId}`);  
+};
 
     const handleCreateTrip = () => {
         navigate('/trips/new');

@@ -1,0 +1,64 @@
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Заголовок */
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(77, 182, 172, 0.15);
+}
+
+.metric-icon {
+    font-size: 1.4rem;
+}
+
+.metric-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #5a7a7a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Однотонні іконки (зелений відтінок) */
+.filter-green {
+    filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(140deg) saturate(300%);
+}
+
+/* Кольори статусів */
+.status-safe {
+    color: #2e7d32;
+}
+
+.status-warning {
+    color: #ff9800;
+}
+
+.status-low {
+    color: #2e7d32;
+}
+
+.status-medium {
+    color: #ff9800;
+}
+
+.status-high {
+    color: #d32f2f;
+}

@@ -1,0 +1,157 @@
+
+.aqi-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 8px 0 20px;
+}
+
+.aqi-emoji {
+    font-size: 3rem;
+}
+
+.aqi-status {
+    text-align: center;
+}
+
+.aqi-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+}
+
+.aqi-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Кольорова шкала */
+.aqi-scale {
+    margin: 16px 0;
+    position: relative;
+}
+
+.scale-bar {
+    display: flex;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.scale-segment {
+    flex: 1;
+    height: 100%;
+}
+
+/* Кольори для шкали - відтінки зеленого */
+.scale-segment:nth-child(1) { background-color: #A5D6A7; }
+.scale-segment:nth-child(2) { background-color: #81C784; }
+.scale-segment:nth-child(3) { background-color: #66BB6A; }
+.scale-segment:nth-child(4) { background-color: #4CAF50; }
+.scale-segment:nth-child(5) { background-color: #388E3C; }
+.scale-segment:nth-child(6) { background-color: #2E7D32; }
+
+.scale-marker {
+    position: relative;
+    margin-top: -18px;
+    margin-bottom: 8px;
+    transition: left 0.3s ease;
+}
+
+.marker-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-left: -8px;
+}
+
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.55rem;
+    color: #8aa8a8;
+    margin-top: 4px;
+}
+
+.scale-labels span {
+    text-align: center;
+    flex: 1;
+    line-height: 1.2;
+}
+
+/* Повідомлення-рекомендація */
+.aqi-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: #2e7d7d;
+    background: rgba(77, 182, 172, 0.1);
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin: 12px 0;
+}
+
+.aqi-message span:first-child {
+    filter: none;
+}
+
+/* Деталі PM */
+.environment-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(77, 182, 172, 0.15);
+}
+
+.env-stat {
+    flex: 1;
+    text-align: center;
+}
+
+.env-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #b0c4c4;
+    text-transform: uppercase;
+    display: block;
+}
+
+.env-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a4a4a;
+    display: block;
+    margin-top: 4px;
+}
+
+/* Адаптивність */
+@media (max-width: 550px) {
+    .aqi-main {
+        padding: 16px;
+    }
+
+    .aqi-emoji {
+        font-size: 2rem;
+    }
+
+    .aqi-value {
+        font-size: 2rem;
+    }
+
+    .scale-labels {
+        font-size: 0.45rem;
+    }
+}

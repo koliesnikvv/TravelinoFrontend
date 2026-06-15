@@ -1,0 +1,127 @@
+.weather-widget {
+    margin-bottom: 32px;
+}
+
+.widget-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a4a4a;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+}
+
+.weather-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    padding: 20px 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.weather-card {
+    text-align: center;
+    padding: 12px 8px;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.weather-card:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.weather-day {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #5a7a7a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.weather-date {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a4a4a;
+    line-height: 1.2;
+    margin: 4px 0;
+}
+
+.weather-date.weekend {
+    color: #c47a7a;
+}
+
+.weather-month {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: #8aa8a8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.weather-icon {
+    font-size: 2.2rem;
+    margin: 8px 0;
+}
+
+.weather-temp-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(77, 182, 172, 0.15);
+}
+
+.weather-temp-col {
+    flex: 1;
+    text-align: center;
+}
+
+.weather-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #b0c4c4;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.weather-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1a4a4a;
+    margin-top: 2px;
+}
+
+/* Адаптивність */
+@media (max-width: 900px) {
+    .weather-container {
+        gap: 8px;
+        padding: 16px 12px;
+    }
+    
+    .weather-date {
+        font-size: 1.3rem;
+    }
+    
+    .weather-icon {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .weather-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .weather-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

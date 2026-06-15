@@ -1,0 +1,100 @@
+.metric-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(77, 182, 172, 0.15);
+}
+
+.metric-icon {
+    font-size: 1.4rem;
+    filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(140deg) saturate(300%);
+}
+
+.metric-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #5a7a7a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.emergency-table {
+    margin: 12px 0;
+}
+
+.emergency-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+    border-bottom: 1px solid rgba(77, 182, 172, 0.1);
+    border-radius: 8px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.emergency-row:hover {
+    background-color: rgba(77, 182, 172, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.emergency-row:last-child {
+    border-bottom: none;
+}
+
+.emergency-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #8aa8a8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.emergency-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #C62828;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: none;
+}
+
+.emergency-note {
+    font-size: 0.75rem;
+    color: #5a7a7a;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    margin-top: 16px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.emergency-note span:first-child {
+    filter: grayscale(100%) brightness(50%) sepia(100%) hue-rotate(140deg) saturate(300%);
+    font-size: 1rem;
+}
+
+@media (max-width: 550px) {
+    .emergency-row {
+        padding: 12px 8px;
+    }
+    .emergency-number {
+        font-size: 1rem;
+    }
+    .emergency-label {
+        font-size: 0.65rem;
+    }
+}

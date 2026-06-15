@@ -22,6 +22,22 @@ export const getCityDetails = async (cityId) => {
     return response.data;
 };
 
+
+
+
+export const getCityInsights = async (cityId) => {
+    try {
+        const response = await client.get(`/catalog/cities/${cityId}/insights/`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching city insights:', error);
+        return null;
+    }
+};
+
+
+
+
 export const getRecommendedCities = async () => {
     try {
         const response = await client.get('/catalog/cities/recommended/');
