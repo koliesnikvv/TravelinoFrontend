@@ -13,7 +13,6 @@ const EmergencyContacts = ({ data }) => {
     return (
         <div className="metric-card">
             <div className="metric-header">
-                <span className="metric-icon">🆘</span>
                 <span className="metric-title">Emergency Contacts</span>
             </div>
 
@@ -35,7 +34,6 @@ const EmergencyContacts = ({ data }) => {
 
             {data.note && (
                 <div className="emergency-note">
-                    <span>💡</span>
                     <span>{data.note}</span>
                 </div>
             )}
