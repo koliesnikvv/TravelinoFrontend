@@ -27,38 +27,38 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
             case 'Flight': return <FlightIcon sx={{ fontSize: 22 }} />;
             case 'Train': return <TrainIcon sx={{ fontSize: 22 }} />;
             case 'Bus': return <DirectionsBusIcon sx={{ fontSize: 22 }} />;
-            default: return <FlightIcon sx={{ fontSize: 22 }} />;
+            default: return <FlightIcon sx={{ fontSize: 22, opacity: 0.5 }} />;
         }
     };
 
     return (
         <Box sx={{ mb: 4 }}>
-            <Typography 
-                variant="h6" 
-                sx={{ 
-                    mb: 2.5, 
-                    color: '#1a4a4a', 
-                    fontWeight: 600, 
-                    display: 'flex', 
-                    alignItems: 'center', 
+            <Typography
+                variant="h6"
+                sx={{
+                    mb: 2.5,
+                    color: '#1a4a4a',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 1,
                     fontSize: '1.15rem'
                 }}
             >
-                <FlightIcon sx={{ transform: 'rotate(45deg)', color: '#1a4a4a', fontSize: 20 }} /> 
+                <FlightIcon sx={{ transform: 'rotate(45deg)', color: '#1a4a4a', fontSize: 20 }} />
                 Transport
             </Typography>
 
             {transport.length === 0 ? (
-                <Card 
-                    variant="outlined" 
-                    sx={{ 
-                        borderRadius: 4, 
-                        borderColor: 'rgba(26, 74, 74, 0.12)', 
+                <Card
+                    variant="outlined"
+                    sx={{
+                        borderRadius: 4,
+                        borderColor: 'rgba(26, 74, 74, 0.12)',
                         bgcolor: 'rgba(255, 255, 255, 0.4)',
                         backdropFilter: 'blur(8px)',
-                        p: 3, 
-                        textAlign: 'center' 
+                        p: 3,
+                        textAlign: 'center'
                     }}
                 >
                     <Typography variant="body2" sx={{ color: '#5a7a7a', fontStyle: 'italic' }}>
@@ -70,12 +70,12 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
                     {transport.map((item) => {
                         const totalPrice = (parseFloat(item.price || 0) * (item.passengers_count || 1)).toFixed(2);
                         const departureDate = item.departure_datetime ? dayjs(item.departure_datetime).format('MMM D, YYYY') : 'Date TBD';
-                        
+
                         return (
-                            <Card 
-                                key={item.id} 
-                                sx={{ 
-                                    borderRadius: 4, 
+                            <Card
+                                key={item.id}
+                                sx={{
+                                    borderRadius: 4,
                                     border: '1px solid rgba(255, 255, 255, 0.6)',
                                     bgcolor: 'rgba(255, 255, 255, 0.8)',
                                     backdropFilter: 'blur(12px)',
@@ -90,13 +90,13 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
                             >
                                 <CardContent sx={{ p: '20px !important' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: { xs: 1, sm: 2 } }}>
-                                        
+
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
-                                            <Avatar 
-                                                sx={{ 
-                                                    bgcolor: '#1a4a4a', 
-                                                    color: '#ffffff', 
-                                                    width: 44, 
+                                            <Avatar
+                                                sx={{
+                                                    bgcolor: '#1a4a4a',
+                                                    color: '#ffffff',
+                                                    width: 44,
                                                     height: 44,
                                                     boxShadow: '0 4px 10px rgba(26, 74, 74, 0.15)',
                                                     flexShrink: 0
@@ -104,7 +104,7 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
                                             >
                                                 {getTypeIcon(item.transport_type)}
                                             </Avatar>
-                                            
+
                                             <Box sx={{ minWidth: 0 }}>
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
                                                     <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1a4a4a', lineHeight: 1.2 }}>
@@ -114,18 +114,20 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
                                                     <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1a4a4a', lineHeight: 1.2 }}>
                                                         {item.arrival_point}
                                                     </Typography>
-                                                    <Chip 
-                                                        label={item.transport_type} 
-                                                        size="small" 
-                                                        sx={{ 
-                                                            bgcolor: 'rgba(26, 74, 74, 0.06)', 
-                                                            color: '#1a4a4a',
-                                                            fontWeight: 600,
-                                                            fontSize: '0.7rem',
-                                                            height: 20,
-                                                            ml: 0.5
-                                                        }} 
-                                                    />
+                                                    {item.transport_type && (
+                                                        <Chip
+                                                            label={item.transport_type}
+                                                            size="small"
+                                                            sx={{
+                                                                bgcolor: 'rgba(26, 74, 74, 0.06)',
+                                                                color: '#1a4a4a',
+                                                                fontWeight: 600,
+                                                                fontSize: '0.7rem',
+                                                                height: 20,
+                                                                ml: 0.5
+                                                            }}
+                                                        />
+                                                    )}
                                                 </Box>
 
                                                 <Typography variant="body2" sx={{ color: '#5a7a7a' }}>
@@ -145,16 +147,16 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
 
                                         {canEdit && (
                                             <Box sx={{ flexShrink: 0, ml: 1 }}>
-                                                <IconButton 
-                                                    onClick={() => onDelete(item.id)} 
-                                                    disableRipple 
-                                                    sx={{ 
+                                                <IconButton
+                                                    onClick={() => onDelete(item.id)}
+                                                    disableRipple
+                                                    sx={{
                                                         color: '#8aa8a8',
-                                                        p: 0, 
+                                                        p: 0,
                                                         transition: 'all 0.3s ease',
                                                         borderRadius: '50%',
                                                         padding: '6px',
-                                                        '&:hover': { 
+                                                        '&:hover': {
                                                             backgroundColor: 'rgba(196, 122, 122, 0.15)',
                                                             color: '#c47a7a',
                                                             transform: 'scale(1.15)'
@@ -181,11 +183,11 @@ export default function TransportSection({ transport = [], onDelete, canEdit, tr
                         variant="contained"
                         onClick={handleAddTransport}
                         startIcon={<FlightIcon sx={{ transform: 'rotate(45deg)' }} />}
-                        sx={{ 
-                            borderRadius: 8, 
-                            bgcolor: '#1a4a4a', 
-                            color: '#ffffff', 
-                            textTransform: 'none', 
+                        sx={{
+                            borderRadius: 8,
+                            bgcolor: '#1a4a4a',
+                            color: '#ffffff',
+                            textTransform: 'none',
                             px: 3.5,
                             py: 1,
                             fontWeight: 600,

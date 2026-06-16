@@ -56,11 +56,11 @@ const WeatherWidget = ({ data }) => {
                         <div className="weather-icon">{day.icon}</div>
                         <div className="weather-temp-row">
                             <div className="weather-temp-col">
-                                <div className="weather-label">МІН.</div>
+                                <div className="weather-label">MIN.</div>
                                 <div className="weather-value">{day.temp_min}°</div>
                             </div>
                             <div className="weather-temp-col">
-                                <div className="weather-label">МАКС.</div>
+                                <div className="weather-label">MAX.</div>
                                 <div className="weather-value">{day.temp_max}°</div>
                             </div>
                         </div>
